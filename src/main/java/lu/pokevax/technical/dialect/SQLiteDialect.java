@@ -1,4 +1,4 @@
-package lu.pokevax.hibernate.dialect;
+package lu.pokevax.technical.dialect;
 
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.function.SQLFunctionTemplate;
@@ -51,10 +51,8 @@ public class SQLiteDialect extends Dialect {
 
     @Override
     protected String getLimitString(String query, boolean hasOffset) {
-        return new StringBuffer(query.length() + 20).
-                append(query).
-                append(hasOffset ? " limit ? offset ?" : " limit ?").
-                toString();
+        return query +
+                (hasOffset ? " limit ? offset ?" : " limit ?");
     }
 
     @Override

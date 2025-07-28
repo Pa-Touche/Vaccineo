@@ -7,6 +7,12 @@ target/
 
 exercise.pdf
 
+# Own convention to show maven dependency tree
+deps.txt
+
+# personal notes
+notebook.csv
+
 data/sqlite-database.db
 
 ### STS ###

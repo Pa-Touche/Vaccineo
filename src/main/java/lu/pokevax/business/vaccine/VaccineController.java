@@ -1,4 +1,4 @@
-package lu.pokevax;
+package lu.pokevax.business.vaccine;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -6,23 +6,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class VaccineController {
 
 
     private final VaccineRepository vaccineRepository;
 
-    public VaccineController(VaccineRepository vaccineRepository) {
-        this.vaccineRepository = vaccineRepository;
-    }
-
     @GetMapping("/vaccines")
-    public List<VaccineEntity> helloWorld() {
+    public List<VaccineTypeEntity> helloWorld() {
         return vaccineRepository.findAll();
     }
 
     @PostMapping("/vaccines")
-    public void create(@RequestBody VaccineEntity vaccineEntity) {
-        vaccineRepository.save(vaccineEntity);
+    public void create(@RequestBody VaccineTypeEntity vaccineTypeEntity) {
+        vaccineRepository.save(vaccineTypeEntity);
     }
 
     @DeleteMapping("/vaccines/{id}")

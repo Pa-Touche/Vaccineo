@@ -20,7 +20,6 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 
-
 @Title("My UI")
 @SpringUI(path = "main")
 public class MainView extends UI {
