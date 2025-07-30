@@ -3,9 +3,7 @@ package lu.pokevax.business.user;
 import lombok.*;
 import lu.pokevax.technical.utils.BaseEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity(name = "user")
 @Setter
@@ -18,7 +16,8 @@ public class UserEntity extends BaseEntity {
 
     @Id
     @Column(name = "id")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(name = "name")
     private String name;

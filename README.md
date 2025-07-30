@@ -5,6 +5,26 @@
 - (x) => not done / TODO
 - (/) => done
 
+
+## Enhancements
+
+To keep things simple some shortcuts were made, some of those with explanation are listed here:
+
+### Technical
+
+- Do not use `@GeneratedValue(strategy = GenerationType.IDENTITY)` within JPA entities as Hibernate cannot batch 
+inserts without round-trip to DBs (best to use one/mulitple common sequences so that Hibernate can batch those: i.e. 'load' 50+ ids at once)
+- **Use** Spring-Security instead of doing it manually. Here was done for learning / exercise reasons  
+  - bearer token / checking mechanism from Spring-Security
+  - Password encryption: do not rely on 'self-made' solutions
+- `@OneToOne(fetch = FetchType.EAGER)`: do not rely on eager strategy and favor more flexible solutions: entityGraph / projections.
+- `@Enumerated(EnumType.STRING)` is more easily readable in DB but takes more space
+- Exposing technical IDs: incremented numbers allow clients to gain knowledge about usage: Privacy and Securicy
+
+### Features
+
+- **Also** technical: i18n: reused wording from exercise.
+
 ## Steps
 
 - Screens and related features to implement: 
@@ -75,3 +95,4 @@
 ## Useful links
 
 - https://github.com/vaadin/bakery-app-starter-fw8-spring/tree/master
+- [sqlitetutorial: SQL-Lite documentation](https://www.sqlitetutorial.net/)

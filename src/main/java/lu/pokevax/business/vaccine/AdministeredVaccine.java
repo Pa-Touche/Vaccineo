@@ -6,26 +6,28 @@ import lu.pokevax.business.user.UserEntity;
 import lu.pokevax.technical.utils.BaseEntity;
 import org.springframework.lang.Nullable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.OffsetDateTime;
 
-@Entity(name = "vaccine")
+@Entity(name = "vaccine_administered")
 @Getter
 @Setter
 public class AdministeredVaccine extends BaseEntity {
     @Id
     @Column(name = "id")
-    private long id;
-
-    @Column(name = "vaccine_type_id", nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
-    private VaccineType vaccineType;
+    private Integer id;
 
-    @Column(name = "user_id", nullable = false, unique = true)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "vaccine_type_id")
+    @NotNull
+    private VaccineTypeEntity vaccineType;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id")
     @NotNull
     private UserEntity user;
 
@@ -38,7 +40,6 @@ public class AdministeredVaccine extends BaseEntity {
     @NotNull
     private Integer doseNumber;
 
-    @Positive
     @Column(name = "comment", nullable = false)
     @Nullable
     private String comment;

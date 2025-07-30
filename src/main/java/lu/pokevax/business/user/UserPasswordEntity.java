@@ -4,8 +4,9 @@ import lombok.*;
 import lu.pokevax.technical.utils.BaseEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
-@Entity(name = "user")
+@Entity(name = "user_password")
 @Setter
 @Getter
 @Builder
@@ -13,11 +14,17 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class UserPasswordEntity extends BaseEntity {
     @Id
-    private Long id;
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")
+//    private UserEntity user;
+
+    @Column(name = "user_id", nullable = false)
+    @NotNull
+    private Long userId;
 
     /**
      * Does not contain actual password but

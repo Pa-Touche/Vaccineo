@@ -9,6 +9,8 @@ import java.util.Objects;
 
 /**
  * Opinionated {@link Object#equals(Object)} implementation for {@link javax.persistence.Entity} classes.
+ * <p>
+ * This approach is heavily inspired from: https://vladmihalcea.com/hibernate-facts-equals-and-hashcode/
  */
 @UtilityClass
 @Slf4j

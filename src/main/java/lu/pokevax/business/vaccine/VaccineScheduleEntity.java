@@ -9,13 +9,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
-@Entity(name = "vaccine")
+@Entity(name = "vaccine_schedule")
 @Getter
 @Setter
 public class VaccineScheduleEntity extends BaseEntity {
     @Id
     @Column(name = "id")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vaccine_type_id")

@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableVaadin
 public class PokevaxApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PokevaxApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(PokevaxApplication.class, args);
+    }
 
 }
