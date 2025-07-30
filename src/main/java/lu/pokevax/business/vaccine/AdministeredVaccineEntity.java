@@ -14,7 +14,8 @@ import java.time.OffsetDateTime;
 @Entity(name = "vaccine_administered")
 @Getter
 @Setter
-public class AdministeredVaccine extends BaseEntity {
+public class AdministeredVaccineEntity extends BaseEntity {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

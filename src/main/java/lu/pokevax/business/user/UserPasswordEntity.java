@@ -18,13 +18,9 @@ public class UserPasswordEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    private UserEntity user;
-
-    @Column(name = "user_id", nullable = false)
-    @NotNull
-    private Long userId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     /**
      * Does not contain actual password but

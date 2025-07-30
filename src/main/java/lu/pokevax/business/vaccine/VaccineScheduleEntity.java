@@ -28,11 +28,6 @@ public class VaccineScheduleEntity extends BaseEntity {
     private Integer doseNumber;
 
     @PositiveOrZero
-    @Column(name = "lower_applicability_days", nullable = false)
-    @NotNull
-    private Integer lowerApplicabilityDays;
-
-    @PositiveOrZero
     @Column(name = "upperApplicabilityDays", nullable = false)
     @NotNull
     private Integer upperApplicabilityDays;

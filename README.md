@@ -4,6 +4,43 @@
 
 - (x) => not done / TODO
 - (/) => done
+- (0) => ignored
+
+## Features description 
+
+### Notification
+
+Notification are implemented in a hybrid mode between daily batch + event-driven: 
+
+- When user creates account: all notifications elements are pre-computed and stored
+- When user adds vaccine: deletes the corresponding notification
+- When users displays notifications: all notifications belonging to the user are returned
+- Daily Batch: deletes notification that are marked for deletion
+
+Missing pieces to make the feature complete: 
+- Add notifications when a new vaccine is added (or new dose)
+- Remove notifications when a dose is removed.
+- Update (or not) existing reminders. 
+
+#### Motivation 
+
+- Keep the cron (very) simple: **deletion only**.
+- Event-design: optimize the scenarios that happens frequently:
+  - User creates account (will create N rows where N is the number of vaccine which should be lower than number of users)
+  - User adds vaccine
+- Event-design: Accept worse performance on the scenarios that happens less-frequently.
+  - Added Vaccine / Dose
+  - Deleted Vaccine / Dose
+  - Changed Vaccine deadline.
+  - User account deletion (this might not be that infrequent!)
+
+#### Known limits
+Notifications were implemented in a simplified manner and **DO NOT** take lower ranges into account but only as a Deadline mechanism.
+A possible implementation that handles real intervals: [3-6] months per example:  
+- Add lower range into `lu.pokevax.business.vaccine.VaccineScheduleEntity` (current only upper *deadline**)
+- Add notifcation active date within `lu.pokevax.business.notification.NotificationForVaccineEntity` so that the notifications element are only returned between both dates. 
+notificationActivationDate >= today =< notificationExpirationDate.
+
 
 
 ## Enhancements
@@ -44,15 +81,14 @@ inserts without round-trip to DBs (best to use one/mulitple common sequences so 
     - (x) Email-address
     - (x) Date of birth
     - (x) BUTTON: delete account with confirmation
-- (x) Analyse data
+- (/) Analyse data
   - What format
   - What column this could give
-- (x) Draft screens on paper
+- (/) Draft screens on paper
 - (x) Have a look at What Vaadin 8 provides
-- (x) Draft DB structure 
-- (x) Draft high level *business* modules
-- (x) Draft Internationalization
-- (x) Scaffold project with inspiration from SORMAS
+- (/) Draft DB structure 
+- (/) Draft high level *business* modules
+- (0) Draft Internationalization
 
 
 ## Ideas
@@ -65,6 +101,11 @@ inserts without round-trip to DBs (best to use one/mulitple common sequences so 
 - Stacktrace
 - GDPR full download endpoint
 - HTTPS
+- Add ArchUnit tests for:
+  - Entities:
+    - Checking if index on foreign key
+    - Inheriting BaseClass
+    - Follows naming conventions
 
 ## Requirements
 
