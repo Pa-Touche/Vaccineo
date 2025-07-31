@@ -3,7 +3,6 @@ package lu.pokevax.business.notification;
 import lombok.*;
 import lu.pokevax.business.user.UserEntity;
 import lu.pokevax.business.vaccine.VaccineScheduleEntity;
-import lu.pokevax.business.vaccine.VaccineTypeEntity;
 import lu.pokevax.technical.utils.BaseEntity;
 
 import javax.persistence.*;

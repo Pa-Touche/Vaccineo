@@ -2,9 +2,14 @@
 
 ## Glossary
 
-- (x) => not done / TODO
-- (/) => done
-- (0) => ignored
+- (T) => not done / TODO
+- (D) => done
+- (I) => ignored
+
+## TO-DOs
+
+- Add missing indexes on foreign keys
+- Spellcheck documentation
 
 ## Features description 
 
@@ -25,6 +30,7 @@ Missing pieces to make the feature complete:
 #### Motivation 
 
 - Keep the cron (very) simple: **deletion only**.
+This can avoid the scenario where the batch simply takes too long to execute and notifications cannot be computed anymore on a daily basis for all users.
 - Event-design: optimize the scenarios that happens frequently:
   - User creates account (will create N rows where N is the number of vaccine which should be lower than number of users)
   - User adds vaccine
@@ -65,30 +71,30 @@ inserts without round-trip to DBs (best to use one/mulitple common sequences so 
 ## Steps
 
 - Screens and related features to implement: 
-  - (x) Login
-  - (x) Create account
-    - (x) Name
-    - (x) Surname
-    - (x) Email-address
-    - (x) Date of birth
-  - (x) List of vaccines of the current user
-    - (x) Add vaccine
-    - (x) Data-table: Vaccine type, 
-    - (x) Filtering / sorting 
-  - (x) My profile
-    - (x) Name
-    - (x) Surname
-    - (x) Email-address
-    - (x) Date of birth
-    - (x) BUTTON: delete account with confirmation
-- (/) Analyse data
+  - (T) Login
+  - (T) Create account
+    - (T) Name
+    - (T) Surname
+    - (T) Email-address
+    - (T) Date of birth
+  - (T) List of vaccines of the current user
+    - (T) Add vaccine
+    - (T) Data-table: Vaccine type, 
+    - (T) Filtering / sorting 
+  - (T) My profile
+    - (T) Name
+    - (T) Surname
+    - (T) Email-address
+    - (T) Date of birth
+    - (T) BUTTON: delete account with confirmation
+- (D) Analyse data
   - What format
   - What column this could give
-- (/) Draft screens on paper
-- (x) Have a look at What Vaadin 8 provides
-- (/) Draft DB structure 
-- (/) Draft high level *business* modules
-- (0) Draft Internationalization
+- (D) Draft screens on paper
+- (T) Have a look at What Vaadin 8 provides
+- (D) Draft DB structure 
+- (D) Draft high level *business* modules
+- (I) Draft Internationalization
 
 
 ## Ideas
