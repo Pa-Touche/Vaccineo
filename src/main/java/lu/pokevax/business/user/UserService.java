@@ -2,12 +2,11 @@ package lu.pokevax.business.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lu.pokevax.business.user.exceptions.InvalidEmailException;
-import lu.pokevax.technical.security.JwtHelper;
-import lu.pokevax.technical.security.PasswordHelper;
+import lu.pokevax.business.user.requests.CreateUserRequest;
+import lu.pokevax.business.user.responses.UserResponse;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 
 
 /**
@@ -18,23 +17,13 @@ import javax.validation.constraints.NotNull;
 @Slf4j
 public class UserService {
 
-    private final JwtHelper jwtHelper;
-    private final PasswordHelper passwordHelper;
-    private final UserPasswordRepository userPasswordRepository;
+    private final UserRepository repository;
 
-    public boolean validCredentials(@NotNull LoginRequest request) {
-        String email = request.getEmail();
-        String password = request.getPassword();
-        UserPasswordEntity entity = userPasswordRepository
-                .findByUserEmail(email)
-                .orElseThrow(() -> InvalidEmailException.forEmail(email));
+    public void createUser(@Valid CreateUserRequest request) {
 
-        String expectedPasswordHash = passwordHelper.hashPassword(password, entity.getSalt());
-
-        return expectedPasswordHash.equals(entity.getPasswordHash());
     }
 
-    public String generateToken(String email) {
-        return jwtHelper.generateToken(email);
+    public UserResponse getUser(Long id) {
+        return null;
     }
 }

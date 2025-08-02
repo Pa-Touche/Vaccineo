@@ -1,4 +1,4 @@
-package lu.pokevax.business.user;
+package lu.pokevax.business.user.login;
 
 import lombok.Builder;
 import lombok.Data;

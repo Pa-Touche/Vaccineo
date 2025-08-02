@@ -11,5 +11,6 @@ import org.mapstruct.ReportingPolicy;
         builder = @org.mapstruct.Builder(disableBuilder = true))
 public interface AministeredVaccineMapper {
 
+    // TODO: define & common config.
     // AdministeredVaccineEntity from(CreateAdministeredVaccineRequest request);
 }

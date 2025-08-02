@@ -5,6 +5,7 @@ import lu.pokevax.technical.utils.BaseEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Entity(name = "user")
 @Setter
@@ -32,5 +33,7 @@ public class UserEntity extends BaseEntity {
     @NotNull
     private String email;
 
-
+    @Column(name = "birth_date", nullable = false)
+    @NotNull
+    private LocalDate birthDate;
 }

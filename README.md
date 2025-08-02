@@ -10,6 +10,7 @@
 
 - Add missing indexes on foreign keys
 - Spellcheck documentation
+- Create common config for mapstruct
 
 ## Features description 
 
@@ -63,7 +64,12 @@ A possible implementation that handles real intervals: [3-6] months per example:
 - Add notifcation active date within `lu.pokevax.business.notification.NotificationForVaccineEntity` so that the notifications element are only returned between both dates. 
 notificationActivationDate >= today =< notificationExpirationDate.
 
+## Testing
 
+This projects relies on much auto-generated code, so that many copy-paste errors are avoided:
+
+- lombok: getter/setter/equals & Hashcode etc.
+- mapstruct: generating POJO mapping code
 
 ## Enhancements
 

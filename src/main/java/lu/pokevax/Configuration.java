@@ -2,9 +2,9 @@ package lu.pokevax;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.stereotype.Component;
 
-@EnableConfigurationProperties
+@Component
 @ConfigurationProperties(prefix = "pokevax")
 @Data
 public class Configuration {

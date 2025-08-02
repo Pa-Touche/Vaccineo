@@ -2,25 +2,39 @@ package lu.pokevax.business.user;
 
 
 import lombok.RequiredArgsConstructor;
-import lu.pokevax.business.user.exceptions.InvalidPasswordException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import lu.pokevax.business.user.requests.CreateUserRequest;
+import lu.pokevax.business.user.responses.UserResponse;
+import lu.pokevax.technical.ValidatedRestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+import javax.validation.Valid;
+
+@ValidatedRestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService service;
 
-    @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest) {
-        if (service.validCredentials(loginRequest)) {
-            return service.generateToken(loginRequest.getEmail());
-        } else {
-            throw new InvalidPasswordException(loginRequest.getEmail());
-        }
+    @GetMapping(":{id}")
+    public UserResponse getUser(@PathVariable Long id) {
+        return service.getUser(id);
+    }
+
+    @PostMapping
+    public void createUser(@RequestBody @Valid CreateUserRequest request) {
+        log.debug("createUser: [{}]", request);
+
+        service.createUser(request);
+    }
+
+
+    @DeleteMapping
+    public void deleteUser(@RequestBody @Valid CreateUserRequest request) {
+        log.debug("deleteUser: [{}]", request);
+
+        service.createUser(request);
     }
 }
