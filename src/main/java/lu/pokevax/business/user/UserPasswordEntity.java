@@ -6,6 +6,14 @@ import lu.pokevax.technical.utils.BaseEntity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+/**
+ * This is simplified representation of password storage.
+ * <p>
+ * Using Spring-Securities tooling would allow to create a single column that contains:
+ * - Salt
+ * - Algorithm type: this is very convenient as it allows to upgrade to more robust algorithms.
+ * - hashed password (using the specified algorithm)
+ */
 @Entity(name = "user_password")
 @Setter
 @Getter
@@ -25,10 +33,11 @@ public class UserPasswordEntity extends BaseEntity {
     /**
      * Does not contain actual password but
      */
-    @Column(name = "surname")
+    @Column(name = "surname", nullable = false)
+    @NotNull
     private String passwordHash;
 
 
-    @Column(name = "salt")
+    @Column(name = "salt", nullable = false)
     private String salt;
 }

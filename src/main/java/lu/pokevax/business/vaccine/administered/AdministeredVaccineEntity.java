@@ -1,8 +1,9 @@
-package lu.pokevax.business.vaccine;
+package lu.pokevax.business.vaccine.administered;
 
 import lombok.Getter;
 import lombok.Setter;
 import lu.pokevax.business.user.UserEntity;
+import lu.pokevax.business.vaccine.VaccineTypeEntity;
 import lu.pokevax.technical.utils.BaseEntity;
 import org.springframework.lang.Nullable;
 

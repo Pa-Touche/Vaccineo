@@ -4,6 +4,7 @@ import lombok.*;
 import lu.pokevax.technical.utils.BaseEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity(name = "user")
 @Setter
@@ -20,12 +21,15 @@ public class UserEntity extends BaseEntity {
     private Integer id;
 
     @Column(name = "name")
+    @NotNull
     private String name;
 
     @Column(name = "surname")
+    @NotNull
     private String surname;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
+    @NotNull
     private String email;
 
 

@@ -13,6 +13,22 @@
 
 ## Features description 
 
+### Security
+
+Security was purposefully designed in a simplified manner.
+**DO NOT** use this project in PROD with those security measures.
+Spring-security should be used instead
+
+#### Exception handling in case of invalid email / password
+
+Many systems (in PROD) do show a generic response in case of: email is invalid or email/password tuple is invalid.
+This is a safety choice **BUT** only if the sign-up screen doesn't show an error in case email already exists.
+Otherwise, a malicious user can still identify if an email is used on the system, which breaks the above measure.
+
+Here for UX reasons the distinction was done and on sign-up email will be rejected if already used.
+
+Ideally this information should not be provided in both cases: invalid credentials + user creation.
+
 ### Notification
 
 Notification are implemented in a hybrid mode between daily batch + event-driven: 

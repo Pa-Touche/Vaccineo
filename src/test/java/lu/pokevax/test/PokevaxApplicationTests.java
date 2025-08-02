@@ -1,4 +1,4 @@
-package lu.pokevax;
+package lu.pokevax.test;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
