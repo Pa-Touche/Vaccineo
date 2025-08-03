@@ -9,6 +9,7 @@ import lu.pokevax.technical.ValidatedRestController;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @ValidatedRestController
 @RequestMapping("/users")
@@ -19,22 +20,22 @@ public class UserController {
     private final UserService service;
 
     @GetMapping(":{id}")
-    public UserResponse getUser(@PathVariable Long id) {
+    public UserResponse getUser(@PathVariable @NotNull Integer id) {
         return service.getUser(id);
     }
 
     @PostMapping
-    public void createUser(@RequestBody @Valid CreateUserRequest request) {
+    public Integer createUser(@RequestBody @Valid CreateUserRequest request) {
         log.debug("createUser: [{}]", request);
 
-        service.createUser(request);
+        return service.createUser(request);
     }
 
 
-    @DeleteMapping
-    public void deleteUser(@RequestBody @Valid CreateUserRequest request) {
-        log.debug("deleteUser: [{}]", request);
+    @DeleteMapping(":{id}")
+    public void deleteUser(@PathVariable @NotNull Integer id) {
+        log.debug("deleteUser with id: [{}]", id);
 
-        service.createUser(request);
+        service.deleteUser(id);
     }
 }

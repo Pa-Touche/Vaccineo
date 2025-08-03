@@ -7,8 +7,7 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(
         componentModel = "spring",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-        unmappedTargetPolicy = ReportingPolicy.ERROR, // important detects change in target API
-        builder = @org.mapstruct.Builder(disableBuilder = true))
+        unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface AministeredVaccineMapper {
 
     // TODO: define & common config.

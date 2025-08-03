@@ -85,6 +85,7 @@ inserts without round-trip to DBs (best to use one/mulitple common sequences so 
 - `@OneToOne(fetch = FetchType.EAGER)`: do not rely on eager strategy and favor more flexible solutions: entityGraph / projections.
 - `@Enumerated(EnumType.STRING)` is more easily readable in DB but takes more space
 - Exposing technical IDs: incremented numbers allow clients to gain knowledge about usage: Privacy and Securicy
+- Indexes: index where only set on foreign keys, as those are used to perform joins.
 
 ### Features
 
