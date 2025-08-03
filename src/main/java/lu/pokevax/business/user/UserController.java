@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @ValidatedRestController
 @RequestMapping("/users")
@@ -37,5 +38,12 @@ public class UserController {
         log.debug("deleteUser with id: [{}]", id);
 
         service.deleteUser(id);
+    }
+
+    public static void main(String[] args) {
+
+        System.out.println(LocalDate.of(1950, 1, 1).toEpochDay());
+
+        System.out.println(LocalDate.parse(LocalDate.now() + ""));
     }
 }

@@ -1,4 +1,4 @@
-package lu.pokevax.technical.dialect;
+package lu.pokevax.technical.persistence;
 
 public interface EntityContract {
 

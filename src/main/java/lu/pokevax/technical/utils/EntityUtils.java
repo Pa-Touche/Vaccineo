@@ -2,7 +2,7 @@ package lu.pokevax.technical.utils;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import lu.pokevax.technical.dialect.EntityContract;
+import lu.pokevax.technical.persistence.EntityContract;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;

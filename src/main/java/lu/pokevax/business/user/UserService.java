@@ -21,13 +21,11 @@ public class UserService {
 
     private final UserRepository repository;
     private final UserMapper userMapper;
+    private final UserCreationHelper userCreationHelper;
+
 
     public Integer createUser(@Valid CreateUserRequest request) {
-        UserEntity entity = userMapper.toEntity(request);
-
-        repository.save(entity);
-
-        return entity.getId();
+        return userCreationHelper.createUser(request);
     }
 
     public UserResponse getUser(Integer id) {

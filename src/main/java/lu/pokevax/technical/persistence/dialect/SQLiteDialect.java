@@ -1,4 +1,4 @@
-package lu.pokevax.technical.dialect;
+package lu.pokevax.technical.persistence.dialect;
 
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.function.SQLFunctionTemplate;

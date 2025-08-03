@@ -7,14 +7,14 @@ CREATE TABLE user (
     email TEXT,
     name TEXT,
     surname TEXT,
-    birth_date REAL not null,
+    birth_date text not null,
 
     UNIQUE (email)
 );
 
 CREATE TABLE user_password (
     id integer PRIMARY KEY AUTOINCREMENT,
-    surname TEXT,
+    password_hash TEXT,
     salt TEXT,
     user_id bigint not null,
 
@@ -73,7 +73,7 @@ CREATE TABLE notification_vaccine (
     user_id integer not null,
     vaccine_schedule_id integer not null,
 
-    expiration_date REAL not null,
+    expiration_date text not null,
 
     foreign key (user_id) REFERENCES user(id),
     foreign key (vaccine_schedule_id) REFERENCES vaccine_schedule(id)

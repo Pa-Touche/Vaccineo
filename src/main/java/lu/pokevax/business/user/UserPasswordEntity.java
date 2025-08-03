@@ -26,14 +26,14 @@ public class UserPasswordEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
     /**
      * Does not contain actual password but
      */
-    @Column(name = "surname", nullable = false)
+    @Column(name = "password_hash", nullable = false)
     @NotNull
     private String passwordHash;
 

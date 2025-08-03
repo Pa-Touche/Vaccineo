@@ -23,9 +23,9 @@ public class PasswordHelper {
     // The way the application is designed, this cannot be modified ad-hoc
     private static final String ALGORITHM = "PBKDF2WithHmacSHA1";
 
-    public GeneratedPassword generatePassword(String rawPassword) {
+    public StorablePasswordWrapper generateStorablePassword(String rawPassword) {
         String salt = generateSalt();
-        return GeneratedPassword.builder()
+        return StorablePasswordWrapper.builder()
                 .salt(salt)
                 .hashedPassword(hashPassword(rawPassword, salt))
                 .build();

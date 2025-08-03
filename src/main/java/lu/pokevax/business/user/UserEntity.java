@@ -1,6 +1,7 @@
 package lu.pokevax.business.user;
 
 import lombok.*;
+import lu.pokevax.technical.persistence.LocalDateAttributeConverter;
 import lu.pokevax.technical.utils.BaseEntity;
 
 import javax.persistence.*;
@@ -35,5 +36,6 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "birth_date", nullable = false)
     @NotNull
+    @Convert(converter = LocalDateAttributeConverter.class)
     private LocalDate birthDate;
 }

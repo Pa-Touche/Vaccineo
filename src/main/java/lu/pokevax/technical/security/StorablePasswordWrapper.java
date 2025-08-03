@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class GeneratedPassword {
+public class StorablePasswordWrapper {
     private final String hashedPassword;
     private final String salt;
 }

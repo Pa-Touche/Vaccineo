@@ -1,6 +1,6 @@
 package lu.pokevax.technical.utils;
 
-import lu.pokevax.technical.dialect.EntityContract;
+import lu.pokevax.technical.persistence.EntityContract;
 
 /**
  * There is no silver-bullet for implementing {@link Object#equals(Object)} and {@link Object#hashCode()} within @{@link javax.persistence.Entity}.
