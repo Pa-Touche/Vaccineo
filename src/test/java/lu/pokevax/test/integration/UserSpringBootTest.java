@@ -9,6 +9,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 
 public class UserSpringBootTest extends BaseSpringBootTest {
@@ -65,6 +66,12 @@ public class UserSpringBootTest extends BaseSpringBootTest {
 
         Assertions.assertThat(actual)
                 .isNotNull();
+    }
+
+    @Test
+    void invalid_request() {
+        // EXECUTE
+        org.junit.jupiter.api.Assertions.assertThrows(ConstraintViolationException.class, () -> userController.createUser(new CreateUserRequest()));
     }
 
 }

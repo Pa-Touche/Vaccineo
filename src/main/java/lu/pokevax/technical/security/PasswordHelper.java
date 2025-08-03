@@ -1,6 +1,6 @@
 package lu.pokevax.technical.security;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -13,7 +13,7 @@ import java.util.Base64;
  * This was implemented manually for learning-purposes.
  * Prefer using something like spring-security (see README).
  */
-@Service
+@Component
 public class PasswordHelper {
 
     private static final SecureRandom RAND = new SecureRandom();

@@ -26,4 +26,11 @@ public class CreateAdministeredVaccineRequest {
 
     @Nullable
     private String comment;
+
+
+    /**
+     * Using the userId is convenient, but could be extracted
+     */
+    @NotNull
+    private Integer userId;
 }

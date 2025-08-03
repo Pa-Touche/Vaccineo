@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.validation.Valid;
 
 @ValidatedRestController
-@RequestMapping("/login")
+@RequestMapping(LoginController.LOGIN_URI)
 @RequiredArgsConstructor
 @Slf4j
 public class LoginController {
+
+    public static final String LOGIN_URI = "/login";
 
     private final LoginService service;
 
     @PostMapping
     public String login(@RequestBody @Valid LoginRequest request) {
-        if (service.validCredentials(request)) {
-            return service.generateToken(request.getEmail());
-        } else {
-            throw new InvalidPasswordException(request.getEmail());
-        }
+        return service.validCredentials(request)
+                .map(service::generateToken)
+                .orElseThrow(() -> new InvalidPasswordException(request.getEmail()));
     }
 }

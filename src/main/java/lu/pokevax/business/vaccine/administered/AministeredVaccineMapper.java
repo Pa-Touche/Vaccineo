@@ -2,6 +2,7 @@ package lu.pokevax.business.vaccine.administered;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
@@ -10,6 +11,8 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface AministeredVaccineMapper {
 
-    // TODO: define & common config.
-    // AdministeredVaccineEntity from(CreateAdministeredVaccineRequest request);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "vaccineType", ignore = true)
+    AdministeredVaccineEntity toEntity(CreateAdministeredVaccineRequest request);
 }

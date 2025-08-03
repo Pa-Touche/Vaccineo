@@ -1,12 +1,12 @@
 package lu.pokevax.business.user.requests;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder
 @ToString(exclude = "password") // other information should probably also NOT be logged
