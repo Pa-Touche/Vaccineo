@@ -2,6 +2,7 @@ package lu.pokevax.business.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lu.pokevax.business.notification.VaccineNotificationCreationHelper;
 import lu.pokevax.business.notification.VaccineNotificationService;
 import lu.pokevax.business.user.requests.CreateUserRequest;
 import lu.pokevax.technical.security.PasswordHelper;
@@ -27,7 +28,7 @@ public class UserCreationHelper {
     private final UserMapper userMapper;
 
     // TODO: refactor: application events / async.
-    private final VaccineNotificationService service;
+    private final VaccineNotificationCreationHelper vaccineNotificationCreationHelper;
 
     public Integer createUser(@Valid CreateUserRequest request) {
         UserEntity userEntity = userMapper.toEntity(request);
@@ -41,6 +42,9 @@ public class UserCreationHelper {
                 .build();
 
         save(userPasswordEntity);
+
+        // this call will slow done the user creation. see TODOs and this class's JavaDoc
+        vaccineNotificationCreationHelper.createVaccineNotifications(userEntity);
 
         return userEntity.getId();
     }

@@ -20,7 +20,7 @@ public class PasswordHelper {
     private static final int ITERATIONS_NUMBER = 310_000;
     private static final int KEY_LENGTH_BITS = 256;
 
-    // The way the application is designed, this cannot be modified ad-hoc
+    // The way the application is designed, this cannot be modified ad-hoc. Using Spring Security it's doable
     private static final String ALGORITHM = "PBKDF2WithHmacSHA1";
 
     public StorablePasswordWrapper generateStorablePassword(String rawPassword) {

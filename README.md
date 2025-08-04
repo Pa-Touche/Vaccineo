@@ -32,6 +32,7 @@ This project is not meant to be used as-is in PROD, mostly due to security issue
 
 - Spellcheck documentation
 - Create common config for mapstruct
+- Check for invalid vaccine name / dosis number
 
 ## Features description 
 

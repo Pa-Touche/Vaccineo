@@ -2,6 +2,7 @@ package lu.pokevax.test.integration;
 
 import lombok.SneakyThrows;
 import lu.pokevax.business.notification.VaccineNotificationRepository;
+import lu.pokevax.business.notification.VaccineNotificationResponseWrapper;
 import lu.pokevax.business.user.UserPasswordRepository;
 import lu.pokevax.business.vaccine.administered.requests.CreateAdministeredVaccineRequest;
 import lu.pokevax.business.vaccine.administered.responses.AdministeredVaccineResponseWrapper;
@@ -59,20 +60,25 @@ public class WhiteBoxDeletionSpringBootTest extends BaseSpringBootTest {
                 .andExpect(status().is2xxSuccessful());
 
         // CHECK
-        MvcResult result = mockMvc.perform(buildAuthorizedPostRequest(VACCINE_URI + "/search", createdUser.getUserId()))
+        MvcResult vaccinesSearchResult = mockMvc.perform(buildAuthorizedPostRequest(VACCINE_URI + "/search", createdUser.getUserId()))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
-        AdministeredVaccineResponseWrapper actual = readJson(result.getResponse(), AdministeredVaccineResponseWrapper.class);
-
-        Assertions.assertThat(actual.getContent())
+        Assertions.assertThat(readJson(vaccinesSearchResult.getResponse(), AdministeredVaccineResponseWrapper.class).getContent())
                 .isEmpty();
+
+        // Notifications
+
+        MvcResult vaccineNotificationsResult = mockMvc.perform(buildAuthorizedGetRequest(VACCINE_NOTIFICATIONS_URI, createdUser.getUserId()))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        Assertions.assertThat(readJson(vaccineNotificationsResult.getResponse(), VaccineNotificationResponseWrapper.class).getContent())
+                .isEmpty();
+
 
         // actual whitebox checks: creates a strong dependency
         Assertions.assertThat(userPasswordRepository.findByUserEmail(createdUser.getEmail()))
-                .isEmpty();
-
-        Assertions.assertThat(vaccineNotificationRepository.findAllByUserId(userId))
                 .isEmpty();
     }
 }

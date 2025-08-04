@@ -1,7 +1,6 @@
 package lu.pokevax.business.vaccine;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lu.pokevax.technical.utils.BaseEntity;
 
 import javax.persistence.*;
@@ -12,6 +11,9 @@ import javax.validation.constraints.PositiveOrZero;
 @Entity(name = "vaccine_schedule")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class VaccineScheduleEntity extends BaseEntity {
     @Id
     @Column(name = "id")

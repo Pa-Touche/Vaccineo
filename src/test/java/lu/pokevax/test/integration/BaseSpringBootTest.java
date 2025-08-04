@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import lu.pokevax.business.notification.VaccineNotificationController;
 import lu.pokevax.business.user.UserController;
 import lu.pokevax.business.user.login.LoginController;
 import lu.pokevax.business.user.login.LoginRequest;
@@ -45,6 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class BaseSpringBootTest {
 
     protected String VACCINE_URI = AdministeredVaccineController.URI;
+    protected String VACCINE_NOTIFICATIONS_URI = VaccineNotificationController.URI;
     protected String USER_URI = UserController.URI;
     protected String LOGIN_URI = LoginController.URI;
 

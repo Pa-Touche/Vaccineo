@@ -21,7 +21,10 @@ public class VaccineNotificationController {
     private final WebTokenExtractor webTokenExtractor;
 
     @GetMapping
-    public List<VaccineNotificationResponse> retrieveNotification(HttpServletRequest httpServletRequest) {
-        return service.retrieveNotificationsFor(webTokenExtractor.extractUserIdOrThrowException(httpServletRequest));
+    public VaccineNotificationResponseWrapper retrieveNotification(HttpServletRequest httpServletRequest) {
+        List<VaccineNotificationResponse> content = service.retrieveNotificationsFor(webTokenExtractor.extractUserIdOrThrowException(httpServletRequest));
+        return VaccineNotificationResponseWrapper.builder()
+                .content(content)
+                .build();
     }
 }
