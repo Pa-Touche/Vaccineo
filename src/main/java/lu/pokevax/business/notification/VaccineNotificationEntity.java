@@ -20,8 +20,8 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(of = {"id", "expirationDate"})
-public class NotificationForVaccineEntity extends BaseEntity {
+@ToString(of = {"id", "deadline"})
+public class VaccineNotificationEntity extends BaseEntity {
 
     @Id
     @Column(name = "id")
@@ -32,19 +32,19 @@ public class NotificationForVaccineEntity extends BaseEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "vaccine_schedule_id")
     private VaccineScheduleEntity vaccineScheduleEntity;
 
     /**
-     * Once this date is passed, the notification must be removed (marked for deletion)
+     * Once this date is over, the notification must be removed (marked for deletion)
      * Persisted to avoid re-computing birthDate and Vaccine schedule end - date.
      */
     @FutureOrPresent
-    @Column(name = "expiration_date", nullable = false)
+    @Column(name = "deadline", nullable = false)
     @NotNull
     @Convert(converter = LocalDateAttributeConverter.class)
-    private LocalDate expirationDate;
+    private LocalDate deadline;
 
 
 }

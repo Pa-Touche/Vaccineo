@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Exposes internal storage to client.
+ * Like this exposes internal persistence fields to client, to avoid this create another class that uses this as reference.
  */
 @Getter
 @RequiredArgsConstructor

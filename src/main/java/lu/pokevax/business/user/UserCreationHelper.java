@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import lu.pokevax.business.user.requests.CreateUserRequest;
 import lu.pokevax.technical.security.PasswordHelper;
 import lu.pokevax.technical.security.StorablePasswordWrapper;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 
-@Service
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class UserCreationHelper {

@@ -3,7 +3,7 @@
 
 -------------------- VACCINE
 CREATE TABLE user (
-    id integer PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT,
     name TEXT,
     surname TEXT,
@@ -13,10 +13,10 @@ CREATE TABLE user (
 );
 
 CREATE TABLE user_password (
-    id integer PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     password_hash TEXT,
     salt TEXT,
-    user_id bigint not null,
+    user_id INTEGER not null,
 
     foreign key (user_id) REFERENCES user(id)
 );
@@ -25,10 +25,10 @@ CREATE INDEX user_password_user_id_index
 ON user_password(user_id);
 
 CREATE TABLE vaccine_schedule (
-    id integer PRIMARY KEY AUTOINCREMENT,
-    dose_number integer not null,
-    application_deadline_days integer not null,
-    vaccine_type_id bigint,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    dose_number INTEGER not null,
+    application_deadline_days INTEGER not null,
+    vaccine_type_id INTEGER,
 
     foreign key (vaccine_type_id) REFERENCES vaccine_type(id),
 
@@ -39,21 +39,21 @@ CREATE INDEX vaccine_schedule_vaccine_type_id_index
 ON vaccine_schedule(vaccine_type_id);
 
 CREATE TABLE vaccine_type (
-    id integer PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT not null,
-    number_of_doses integer not null,
+    number_of_doses INTEGER not null,
     treatment_description TEXT not null,
 
     UNIQUE (name)
 );
 
 CREATE TABLE vaccine_administered (
-    id integer PRIMARY KEY AUTOINCREMENT,
-    administration_date timestamp not null,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    administration_date INTEGER not null,
     comment TEXT,
-    dose_number integer not null,
-    user_id bigint not null,
-    vaccine_type_id integer not null,
+    dose_number INTEGER not null,
+    user_id INTEGER not null,
+    vaccine_type_id INTEGER not null,
 
     foreign key (user_id) REFERENCES user(id)
     foreign key (vaccine_type_id) REFERENCES vaccine_type(id),
@@ -71,12 +71,12 @@ ON vaccine_administered(administration_date);
 
 -------------------- NOTIFICATION
 CREATE TABLE notification_vaccine (
-    id integer PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    user_id integer not null,
-    vaccine_schedule_id integer not null,
+    user_id INTEGER not null,
+    vaccine_schedule_id INTEGER not null,
 
-    expiration_date text not null,
+    deadline INTEGER not null,
 
     foreign key (user_id) REFERENCES user(id),
     foreign key (vaccine_schedule_id) REFERENCES vaccine_schedule(id)
@@ -88,3 +88,7 @@ CREATE INDEX notification_vaccine_vaccine_schedule_id_index
 ON notification_vaccine(vaccine_schedule_id);
 CREATE INDEX notification_vaccine_user_id_index
 ON notification_vaccine(user_id);
+
+-- used within batch for deletion
+CREATE INDEX notification_vaccine_deadline_index
+ON notification_vaccine(deadline);

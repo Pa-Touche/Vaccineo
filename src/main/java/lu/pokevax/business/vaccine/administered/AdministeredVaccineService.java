@@ -17,6 +17,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,9 +25,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class AdministeredVaccineService {
     private static final Tuple<List<String>, Sort.Direction> DEFAULT_SORT = new Tuple<>(
             Collections.singletonList(VaccineSortableField.ADMINISTRATION_DATE.getFieldName()),
@@ -38,6 +40,7 @@ public class AdministeredVaccineService {
     private final UserService userService;
     private final AdministeredVaccineMapper mapper;
 
+    @Transactional(readOnly = true)
     public boolean vaccineNameExists(String vaccineName) {
         return vaccineTypeRepository.existsByName(vaccineName);
     }
@@ -65,6 +68,7 @@ public class AdministeredVaccineService {
         return administeredVaccineRepository.save(administeredVaccineEntity).getId();
     }
 
+    @Transactional(readOnly = true)
     public List<AdministeredVaccineResponse> search(UserIdWrapper<SearchVaccineRequest> requestWrapper) {
         SearchVaccineRequest request = requestWrapper.getRequest();
         Integer userId = requestWrapper.getUserId();

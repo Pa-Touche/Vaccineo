@@ -18,7 +18,7 @@ public class VaccineScheduleEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "vaccine_type_id")
     private VaccineTypeEntity vaccineType;
 

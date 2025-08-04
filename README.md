@@ -68,8 +68,9 @@ This can avoid the scenario where the batch simply takes too long to execute and
 Notifications were implemented in a simplified manner and **DO NOT** take lower ranges into account but only as a Deadline mechanism.
 A possible implementation that handles real intervals: [3-6] months per example:  
 - Add lower range into `lu.pokevax.business.vaccine.VaccineScheduleEntity` (current only upper *deadline**)
-- Add notifcation active date within `lu.pokevax.business.notification.NotificationForVaccineEntity` so that the notifications element are only returned between both dates. 
-notificationActivationDate >= today =< notificationExpirationDate.
+- Add notifcation active date within `lu.pokevax.business.notification.VaccineNotificationEntity` so that the
+  notifications element are only returned between both dates.
+  notificationActivationDate >= today =< notificationExpirationDate.
 
 ## Testing
 
