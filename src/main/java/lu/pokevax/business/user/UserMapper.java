@@ -12,10 +12,8 @@ import org.mapstruct.ReportingPolicy;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface UserMapper {
-    // TODO: must be defined
 
     UserResponse toResponse(UserEntity user);
-
 
     @Mapping(target = "id", ignore = true)
     UserEntity toEntity(CreateUserRequest request);

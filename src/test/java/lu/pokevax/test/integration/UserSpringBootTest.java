@@ -83,8 +83,33 @@ public class UserSpringBootTest extends BaseSpringBootTest {
                 .andExpect(status().is2xxSuccessful());
     }
 
+    @SneakyThrows
+    @Test
+    void user_saved_and_duplicateEmail() {
+        // PREPARE
+        CreateUserRequest request = CreateUserRequest.builder()
+                .birthDate(LocalDate.of(1993, 4, 29))
+                .email("mail@mail.fr")
+                .name("name")
+                .surname("surname")
+                .password("password")
+                .build();
+
+        createUser(request);
+
+        // EXECUTE & CHECK
+        // same request for a second time
+        mockMvc.perform(post(USER_URI)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+
+
     @Test
     void invalid_request_empty_payload() {
+        // TODO: rewrite using mockMVC
         // EXECUTE
         org.junit.jupiter.api.Assertions.assertThrows(ConstraintViolationException.class, () -> userController.createUser(new CreateUserRequest()));
     }

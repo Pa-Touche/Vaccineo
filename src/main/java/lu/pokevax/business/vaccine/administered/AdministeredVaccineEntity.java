@@ -50,7 +50,7 @@ public class AdministeredVaccineEntity extends BaseEntity {
     @NotNull
     private Integer doseNumber;
 
-    @Column(name = "comment", nullable = false)
+    @Column(name = "comment")
     @Nullable
     private String comment;
 }

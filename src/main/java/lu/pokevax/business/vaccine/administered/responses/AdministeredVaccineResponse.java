@@ -1,7 +1,9 @@
 package lu.pokevax.business.vaccine.administered.responses;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotEmpty;
@@ -12,6 +14,8 @@ import java.time.LocalDate;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdministeredVaccineResponse {
 
     @NotNull

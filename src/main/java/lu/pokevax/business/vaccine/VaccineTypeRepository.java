@@ -6,5 +6,7 @@ import java.util.Optional;
 
 public interface VaccineTypeRepository extends JpaRepository<VaccineTypeEntity, Integer> {
 
+    boolean existsByName(String name);
+
     Optional<VaccineTypeEntity> findByName(String name);
 }

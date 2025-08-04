@@ -9,8 +9,8 @@ import lu.pokevax.business.vaccine.VaccineTypeRepository;
 import lu.pokevax.business.vaccine.administered.requests.CreateAdministeredVaccineRequest;
 import lu.pokevax.business.vaccine.administered.requests.SearchVaccineCriteria;
 import lu.pokevax.business.vaccine.administered.requests.SearchVaccineRequest;
-import lu.pokevax.business.vaccine.administered.requests.SortRequest;
 import lu.pokevax.business.vaccine.administered.responses.AdministeredVaccineResponse;
+import lu.pokevax.technical.Tuple;
 import lu.pokevax.technical.exceptions.ResourceNotFoundException;
 import lu.pokevax.technical.web.UserIdWrapper;
 import org.apache.commons.collections4.CollectionUtils;
@@ -28,15 +28,20 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AdministeredVaccineService {
-    public static final SortRequest DEFAULT_SORT = SortRequest.builder()
-            .fields(Collections.singletonList("administrationDate"))
-            .direction(Sort.Direction.DESC)
-            .build();
+    private static final Tuple<List<String>, Sort.Direction> DEFAULT_SORT = new Tuple<>(
+            Collections.singletonList(VaccineSortableField.ADMINISTRATION_DATE.getFieldName()),
+            Sort.Direction.DESC
+    );
 
     private final AdministeredVaccineRepository administeredVaccineRepository;
     private final VaccineTypeRepository vaccineTypeRepository;
     private final UserService userService;
-    private final AministeredVaccineMapper mapper;
+    private final AdministeredVaccineMapper mapper;
+
+    public boolean vaccineNameExists(String vaccineName) {
+        return vaccineTypeRepository.existsByName(vaccineName);
+    }
+
 
     public Integer create(UserIdWrapper<CreateAdministeredVaccineRequest> requestWrapper) {
         CreateAdministeredVaccineRequest request = requestWrapper.getRequest();
@@ -64,38 +69,38 @@ public class AdministeredVaccineService {
         SearchVaccineRequest request = requestWrapper.getRequest();
         Integer userId = requestWrapper.getUserId();
 
-        SearchVaccineCriteria criteria = request.getCriteria();
 
         Specification<AdministeredVaccineEntity> spec = Specification.where(null);
 
         spec = spec.and(AdministeredVaccineSpecifications.hasUserId(userId));
 
-        if (criteria != null) {
+        if (request != null && request.getCriteria() != null) {
+            SearchVaccineCriteria criteria = request.getCriteria();
+
             spec = spec.and(AdministeredVaccineSpecifications.hasVaccineName(criteria.getVaccineName()));
             spec = spec.and(AdministeredVaccineSpecifications.hasAdministrationDate(criteria.getAdministrationDate()));
             spec = spec.and(AdministeredVaccineSpecifications.hasDoseNumber(criteria.getDoseNumber()));
-            spec = spec.and(AdministeredVaccineSpecifications.hasCommentContaining(criteria.getComment()));
         }
 
 
-        SortRequest sortRequest = Optional.ofNullable(request.getSort())
+        Tuple<List<String>, Sort.Direction> sortRequest = Optional.ofNullable(request)
+                .map(SearchVaccineRequest::getSort)
                 .map(originalSortRequest -> {
                     Sort.Direction direction = originalSortRequest.getDirection();
-                    List<String> fields = originalSortRequest.getFields();
-                    List<String> sortableFields = CollectionUtils.isNotEmpty(fields) ? new ArrayList<>(fields) : new ArrayList<>(DEFAULT_SORT.getFields());
+                    List<VaccineSortableField> fields = originalSortRequest.getFields();
+                    List<String> sortableFields = CollectionUtils.isNotEmpty(fields) ? fields.stream()
+                            .map(VaccineSortableField::getFieldName)
+                            .collect(Collectors.toList()) : new ArrayList<>(DEFAULT_SORT.getFirst());
 
                     // provides a fallback in case vaccines sort-criteria are exactly equal. (same date).
                     sortableFields.add("id");
 
-                    return SortRequest.builder()
-                            .direction(direction != null ? direction : DEFAULT_SORT.getDirection())
-                            .fields(sortableFields)
-                            .build();
+                    return new Tuple<>(sortableFields, direction);
                 })
                 .orElse(DEFAULT_SORT);
 
 
-        return administeredVaccineRepository.findAll(spec, Sort.by(sortRequest.getDirection(), sortRequest.getFields().toArray(new String[0]))).stream()
+        return administeredVaccineRepository.findAll(spec, Sort.by(sortRequest.getSecond(), sortRequest.getFirst().toArray(new String[0]))).stream()
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
 

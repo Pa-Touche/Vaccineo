@@ -24,7 +24,7 @@ public class UserController {
     @GetMapping("/{id}")
     public UserResponse getUser(@PathVariable @NotNull Integer id) {
         log.debug("getUser with id: [{}]", id);
-        return service.getUserResponse(id);
+        return service.getUserResponseOrThrowException(id);
     }
 
     @PostMapping

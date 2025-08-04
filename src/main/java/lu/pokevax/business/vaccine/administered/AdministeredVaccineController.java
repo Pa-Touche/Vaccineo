@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lu.pokevax.business.vaccine.administered.requests.CreateAdministeredVaccineRequest;
 import lu.pokevax.business.vaccine.administered.requests.SearchVaccineRequest;
-import lu.pokevax.business.vaccine.administered.responses.AdministeredVaccineResponse;
+import lu.pokevax.business.vaccine.administered.responses.AdministeredVaccineResponseWrapper;
 import lu.pokevax.technical.ValidatedRestController;
 import lu.pokevax.technical.web.WebTokenExtractor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 @ValidatedRestController
 @RequestMapping(value = AdministeredVaccineController.URI)
@@ -35,9 +34,11 @@ public class AdministeredVaccineController {
     }
 
     @PostMapping("/search")
-    public List<AdministeredVaccineResponse> search(HttpServletRequest httpServletRequest,
-                                                    @Valid @RequestBody SearchVaccineRequest request) {
+    public AdministeredVaccineResponseWrapper search(HttpServletRequest httpServletRequest,
+                                                     @Valid @RequestBody(required = false) SearchVaccineRequest request) {
         log.debug("search [{}]", request);
-        return service.search(webTokenExtractor.enrichRequestWithUserID(httpServletRequest, request));
+        return AdministeredVaccineResponseWrapper.builder()
+                .content(service.search(webTokenExtractor.enrichRequestWithUserID(httpServletRequest, request)))
+                .build();
     }
 }

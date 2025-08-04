@@ -50,7 +50,7 @@ CREATE TABLE vaccine_type (
 CREATE TABLE vaccine_administered (
     id integer PRIMARY KEY AUTOINCREMENT,
     administration_date timestamp not null,
-    comment TEXT not null,
+    comment TEXT,
     dose_number integer not null,
     user_id bigint not null,
     vaccine_type_id integer not null,
@@ -65,6 +65,9 @@ CREATE INDEX vaccine_administered_vaccine_type_id_index
 ON vaccine_administered(vaccine_type_id);
 CREATE INDEX vaccine_administered_user_id_index
 ON vaccine_administered(user_id);
+-- Used as default SORT column
+CREATE INDEX vaccine_administered_administration_date_index
+ON vaccine_administered(administration_date);
 
 -------------------- NOTIFICATION
 CREATE TABLE notification_vaccine (

@@ -10,8 +10,8 @@ public enum VaccineName {
     COMBINED_VACCINE_D_T_AP_HIB_IPV_HEP_B("Vaccin combiné (D, T, aP, Hib, IPV, Hep B)"),
     ROTAVIRUS("Rotavirus"),
     PNEUMOCOQUES("Pneumocoques"),
-    Méningocoque("Méningocoque B"),
-    COMBINED_VACCINE_RORV("Vaccin combiné"),
+    MENINGOCOQUE("Méningocoque B"),
+    COMBINED_VACCINE_RORV("Vaccin combiné (RORV)"),
     MENINGOCOQUES_ACWY("Méningocoques ACWY");
 
     private final String description;

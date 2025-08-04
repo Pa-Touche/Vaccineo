@@ -32,7 +32,7 @@ public class UserService {
         return repository.existsByEmail(email);
     }
 
-    public UserResponse getUserResponse(Integer id) {
+    public UserResponse getUserResponseOrThrowException(Integer id) {
         return userMapper.toResponse(getUserEntityOrThrowException(id));
     }
 
