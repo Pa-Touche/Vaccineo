@@ -3,23 +3,22 @@ package lu.pokevax.technical.security;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lu.pokevax.business.user.login.LoginController;
+import lu.pokevax.technical.web.WebTokenExtractor;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class JwtValidationFilter implements Filter {
-    public static final String BEARER_PREFIX = "Bearer ";
-    public static final int PREFIX_LENGTH = BEARER_PREFIX.length();
-    public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    private final JwtHelper jwtHelper;
+    private final WebTokenExtractor webTokenExtractor;
 
     @Override
     public void init(FilterConfig filterConfig) {
@@ -31,22 +30,15 @@ public class JwtValidationFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        if (request.getRequestURI().equals(LoginController.LOGIN_URI)) {
+        if (request.getRequestURI().equals(LoginController.URI)) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
 
-        String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
+        Optional<Integer> userId = webTokenExtractor.extractUserId(request);
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization header is missing or invalid");
-            return;
-        }
-
-        String token = authorizationHeader.substring(PREFIX_LENGTH);
-
-        if (!jwtHelper.validateToken(token)) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The provided token is invalid. It's might be expired, try to connect again using the '/login' endpoint");
+        if (!userId.isPresent()) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No token provided or is invalid. It's might be expired, try to connect again using the '/login' endpoint");
             return;
         }
 

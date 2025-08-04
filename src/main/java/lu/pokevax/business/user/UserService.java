@@ -28,10 +28,17 @@ public class UserService {
         return userCreationHelper.createUser(request);
     }
 
-    public UserResponse getUser(Integer id) {
+    public boolean emailExist(@NotNull String email) {
+        return repository.existsByEmail(email);
+    }
+
+    public UserResponse getUserResponse(Integer id) {
+        return userMapper.toResponse(getUserEntityOrThrowException(id));
+    }
+
+    public UserEntity getUserEntityOrThrowException(Integer id) {
         return repository.findById(id)
-                .map(userMapper::toResponse)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("The user with id: '{}' was not found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("The user with id: '%s' was not found", id)));
     }
 
     public void deleteUser(@NotNull Integer id) {

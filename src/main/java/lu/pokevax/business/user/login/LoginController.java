@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.validation.Valid;
 
 @ValidatedRestController
-@RequestMapping(LoginController.LOGIN_URI)
+@RequestMapping(LoginController.URI)
 @RequiredArgsConstructor
 @Slf4j
 public class LoginController {
 
-    public static final String LOGIN_URI = "/login";
+    public static final String URI = "/login";
 
     private final LoginService service;
 

@@ -29,8 +29,12 @@ public class UserCreationHelper {
                 .passwordHash(storablePassword.getHashedPassword())
                 .build();
 
-        userPasswordRepository.save(userPasswordEntity);
+        save(userPasswordEntity);
 
         return userEntity.getId();
+    }
+
+    private UserPasswordEntity save(UserPasswordEntity userPasswordEntity) {
+        return userPasswordRepository.save(userPasswordEntity);
     }
 }

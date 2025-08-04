@@ -1,7 +1,6 @@
 package lu.pokevax.business.vaccine.administered;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lu.pokevax.business.user.UserEntity;
 import lu.pokevax.business.vaccine.VaccineTypeEntity;
 import lu.pokevax.technical.utils.BaseEntity;
@@ -15,6 +14,9 @@ import java.time.OffsetDateTime;
 @Entity(name = "vaccine_administered")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AdministeredVaccineEntity extends BaseEntity {
 
     @Id

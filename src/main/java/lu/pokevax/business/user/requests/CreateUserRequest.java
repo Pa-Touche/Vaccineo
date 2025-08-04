@@ -1,6 +1,7 @@
 package lu.pokevax.business.user.requests;
 
 import lombok.*;
+import lu.pokevax.business.user.validation.UniqueUserEmail;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ public class CreateUserRequest {
 
     @Email
     @NotEmpty
+    @UniqueUserEmail
     private String email;
 
     @Pattern(regexp = ".{5,}")

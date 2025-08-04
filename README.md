@@ -135,6 +135,7 @@ inserts without round-trip to DBs (best to use one/mulitple common sequences so 
     - Checking if index on foreign key
     - Inheriting BaseClass
     - Follows naming conventions
+- Logging: Create AOP annotation to enable default logging.
 
 ## Requirements
 
