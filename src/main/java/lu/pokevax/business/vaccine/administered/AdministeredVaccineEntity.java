@@ -30,7 +30,7 @@ public class AdministeredVaccineEntity extends BaseEntity {
     @NotNull
     private VaccineTypeEntity vaccineType;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     @NotNull
     private UserEntity user;

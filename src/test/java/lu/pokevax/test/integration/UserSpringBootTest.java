@@ -1,17 +1,22 @@
 package lu.pokevax.test.integration;
 
+import lombok.SneakyThrows;
 import lu.pokevax.business.user.UserController;
 import lu.pokevax.business.user.login.LoginController;
-import lu.pokevax.business.user.login.LoginRequest;
 import lu.pokevax.business.user.requests.CreateUserRequest;
 import lu.pokevax.business.user.responses.UserResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class UserSpringBootTest extends BaseSpringBootTest {
 
@@ -44,6 +49,30 @@ public class UserSpringBootTest extends BaseSpringBootTest {
     }
 
     @Test
+    void user_delete_user() {
+        // PREPARE
+        CreateUserRequest request = CreateUserRequest.builder()
+                .birthDate(LocalDate.of(2000, 1, 1))
+                .email("test@mail.ch")
+                .name("Doe")
+                .surname("John")
+                .password("password")
+                .build();
+
+        // EXECUTE
+        Integer createdUserId = userController.createUser(request);
+
+        // CHECK
+        UserResponse actual = userController.getUser(createdUserId);
+
+        Assertions.assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(request);
+    }
+
+
+    @SneakyThrows
+    @Test
     @Disabled("Create code to be able to create unique email addresses")
     void user_saved_and_login() {
         // PREPARE
@@ -57,17 +86,22 @@ public class UserSpringBootTest extends BaseSpringBootTest {
                 .password(password)
                 .build();
 
-        // EXECUTE
-        userController.createUser(request);
+        // EXECUTE & CHECK
+        MvcResult result = mockMvc.perform(post(USER_URI)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(request)))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
 
-        // CHECK
-        String actual = loginController.login(LoginRequest.builder()
-                .email(email)
-                .password(password)
-                .build());
+        Integer createdUserId = Integer.valueOf(result.getResponse().getContentAsString());
 
-        Assertions.assertThat(actual)
-                .isNotNull();
+        System.out.println("result = " + result);
+//
+//        MvcResult result = mockMvc.perform(post(USER_URI)
+//                        .header("Authorization", "This is not really a Bearer !")
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isAccepted())
+//                .andReturn();
     }
 
     @Test

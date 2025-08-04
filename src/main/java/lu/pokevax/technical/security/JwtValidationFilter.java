@@ -2,8 +2,10 @@ package lu.pokevax.technical.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lu.pokevax.business.user.UserController;
 import lu.pokevax.business.user.login.LoginController;
 import lu.pokevax.technical.web.WebTokenExtractor;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -30,7 +32,8 @@ public class JwtValidationFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        if (request.getRequestURI().equals(LoginController.URI)) {
+        String requestURI = request.getRequestURI();
+        if (LoginController.URI.equals(requestURI) || (UserController.URI.equals(requestURI) && HttpMethod.POST.name().equals(request.getMethod()))) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
