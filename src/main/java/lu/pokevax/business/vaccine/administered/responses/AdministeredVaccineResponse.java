@@ -1,4 +1,4 @@
-package lu.pokevax.business.vaccine.administered;
+package lu.pokevax.business.vaccine.administered.responses;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,17 +8,21 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 
 @Data
 @Builder
-public class CreateAdministeredVaccineRequest {
+public class AdministeredVaccineResponse {
+
+    @NotNull
+    private Integer id;
+
     @NotNull
     @NotEmpty
-    private final String vaccineName;
+    private String vaccineName;
 
     @PastOrPresent
-    private OffsetDateTime administrationDateTime;
+    private LocalDate administrationDate;
 
     @NotNull
     @Positive
@@ -26,11 +30,4 @@ public class CreateAdministeredVaccineRequest {
 
     @Nullable
     private String comment;
-
-
-    /**
-     * Using the userId is convenient, but could be extracted
-     */
-    @NotNull
-    private Integer userId;
 }

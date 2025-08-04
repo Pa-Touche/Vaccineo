@@ -21,8 +21,9 @@ public class UserController {
 
     private final UserService service;
 
-    @GetMapping(":{id}")
+    @GetMapping("/{id}")
     public UserResponse getUser(@PathVariable @NotNull Integer id) {
+        log.debug("getUser with id: [{}]", id);
         return service.getUserResponse(id);
     }
 
@@ -34,7 +35,7 @@ public class UserController {
     }
 
 
-    @DeleteMapping(":{id}")
+    @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable @NotNull Integer id) {
         log.debug("deleteUser with id: [{}]", id);
 

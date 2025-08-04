@@ -8,8 +8,4 @@ public class InvalidPasswordException extends RuntimeException {
     public InvalidPasswordException(String message) {
         super(message);
     }
-
-    public static InvalidPasswordException forEmail(String email) {
-        return new InvalidPasswordException(String.format("Invalid password provided for email: '%s'", email));
-    }
 }

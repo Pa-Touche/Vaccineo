@@ -3,13 +3,15 @@ package lu.pokevax.business.vaccine.administered;
 import lombok.*;
 import lu.pokevax.business.user.UserEntity;
 import lu.pokevax.business.vaccine.VaccineTypeEntity;
+import lu.pokevax.technical.persistence.LocalDateAttributeConverter;
 import lu.pokevax.technical.utils.BaseEntity;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 
 @Entity(name = "vaccine_administered")
 @Getter
@@ -22,9 +24,11 @@ public class AdministeredVaccineEntity extends BaseEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     private Integer id;
 
+    /**
+     * Eagerly loaded to avoid additional query.
+     */
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "vaccine_type_id")
     @NotNull
@@ -35,9 +39,11 @@ public class AdministeredVaccineEntity extends BaseEntity {
     @NotNull
     private UserEntity user;
 
-    @Column(name = "administration_date_time", nullable = false)
+    @Column(name = "administration_date", nullable = false)
+    @Convert(converter = LocalDateAttributeConverter.class)
     @NotNull
-    private OffsetDateTime administrationDateTime;
+    @PastOrPresent
+    private LocalDate administrationDate;
 
     @Positive
     @Column(name = "dose_number", nullable = false)

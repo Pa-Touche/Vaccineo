@@ -14,6 +14,13 @@
 
 ## Features description 
 
+### Vaccine search
+
+The request is not paginated as it's not expected that avery huge amount of vaccines will be created.
+In PROD additional checks should be added.
+
+IMO JPA model gen should be used to provide type-safety.
+
 ### Security
 
 Security was purposefully designed in a simplified manner.

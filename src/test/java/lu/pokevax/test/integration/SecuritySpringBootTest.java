@@ -1,5 +1,6 @@
 package lu.pokevax.test.integration;
 
+import lu.pokevax.business.user.login.LoginRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
@@ -16,7 +17,7 @@ public class SecuritySpringBootTest extends BaseSpringBootTest {
                         .header("Authorization", "Bearer " + bearerToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -25,7 +26,7 @@ public class SecuritySpringBootTest extends BaseSpringBootTest {
                         .header("Authorization", "This is not really a Bearer !")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -45,5 +46,29 @@ public class SecuritySpringBootTest extends BaseSpringBootTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void invalid_login_unknown_email() throws Exception {
+        mockMvc.perform(post(LOGIN_URI)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(LoginRequest.builder()
+                                .email("valid@mail.de")
+                                .password("some_password")
+                                .build())))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void invalid_login_incorrect_password() throws Exception {
+        CreateUserSummary randomUser = createRandomUser();
+
+        mockMvc.perform(post(LOGIN_URI)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(LoginRequest.builder()
+                                .email(randomUser.getEmail())
+                                .password("***some_password***")
+                                .build())))
+                .andExpect(status().isUnauthorized());
     }
 }

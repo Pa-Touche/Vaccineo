@@ -49,7 +49,7 @@ CREATE TABLE vaccine_type (
 
 CREATE TABLE vaccine_administered (
     id integer PRIMARY KEY AUTOINCREMENT,
-    administration_date_time timestamp not null,
+    administration_date timestamp not null,
     comment TEXT not null,
     dose_number integer not null,
     user_id bigint not null,

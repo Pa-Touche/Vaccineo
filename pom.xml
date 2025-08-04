@@ -23,6 +23,9 @@
 		<mapstruct.version>1.6.3</mapstruct.version>
 		<jjwt.version>0.11.5</jjwt.version>
 		<javafaker.version>1.0.2</javafaker.version>
+		<hibernate-jpamodelgen.version>5.1.2.Final</hibernate-jpamodelgen.version>
+		<commons-lang3.version>3.18.0</commons-lang3.version>
+		<commons-collections4.version>4.5.0</commons-collections4.version>
 	</properties>
 	<dependencies>
 		<!--  SPRING starter dependencies -->
@@ -82,6 +85,16 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>${commons-collections4.version}</version>
 		</dependency>
 
 		<!-- OPTIONAL dependencies -->

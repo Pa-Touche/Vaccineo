@@ -19,7 +19,7 @@ public class RandomDataUtils {
     }
 
     public static String password() {
-        // TODO: this is not nice, even for tests.
+        // TODO: this is not nice
         return faker.name().fullName();
     }
 

@@ -24,6 +24,6 @@ public class LoginController {
     public String login(@RequestBody @Valid LoginRequest request) {
         return service.validCredentials(request)
                 .map(service::generateToken)
-                .orElseThrow(() -> new InvalidPasswordException(request.getEmail()));
+                .orElseThrow(() -> new InvalidPasswordException(String.format("Invalid password provided for email: '%s'", request.getEmail())));
     }
 }

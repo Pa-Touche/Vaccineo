@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lu.pokevax.business.user.UserController;
 import lu.pokevax.business.user.login.LoginController;
+import lu.pokevax.business.user.login.LoginRequest;
 import lu.pokevax.business.user.requests.CreateUserRequest;
 import lu.pokevax.business.vaccine.administered.AdministeredVaccineController;
 import lu.pokevax.technical.security.JwtHelper;
@@ -24,9 +25,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.time.LocalDate;
+import javax.validation.constraints.NotNull;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -58,17 +59,20 @@ public class BaseSpringBootTest {
     @SneakyThrows
     public CreateUserSummary createRandomUser() {
         String email = RandomDataUtils.emailAddress();
-        String name = RandomDataUtils.lastName();
-        String surname = RandomDataUtils.surname();
         String password = RandomDataUtils.password();
         CreateUserRequest request = CreateUserRequest.builder()
                 .birthDate(RandomDataUtils.birthDate())
                 .email(email)
-                .name(name)
-                .surname(surname)
+                .name(RandomDataUtils.lastName())
+                .surname(RandomDataUtils.surname())
                 .password(password)
                 .build();
 
+        return createUser(request);
+    }
+
+    @SneakyThrows
+    public CreateUserSummary createUser(CreateUserRequest request) {
         MvcResult result = mockMvc.perform(post(USER_URI)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(request)))
@@ -76,6 +80,31 @@ public class BaseSpringBootTest {
                 .andReturn();
 
         Integer createdUserId = Integer.valueOf(result.getResponse().getContentAsString());
+
+        return CreateUserSummary.builder()
+                .userId(createdUserId)
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .build();
+    }
+
+    @SneakyThrows
+    public String login(CreateUserSummary createUserSummary) {
+        return login(createUserSummary.getEmail(), createUserSummary.getPassword());
+    }
+
+    @SneakyThrows
+    public String login(String email, String password) {
+        MvcResult result = mockMvc.perform(post(LOGIN_URI)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(LoginRequest.builder()
+                                .email(email)
+                                .password(password)
+                                .build())))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        return result.getResponse().getContentAsString();
     }
 
     @SneakyThrows
@@ -83,12 +112,32 @@ public class BaseSpringBootTest {
         return objectMapper.writeValueAsString(object);
     }
 
-    protected MockHttpServletRequestBuilder buildAuthorizedRequest(String urlTemplate, Integer userId) {
+    protected MockHttpServletRequestBuilder buildAuthorizedPostRequest(String urlTemplate, Integer userId) {
         String validToken = jwtHelper.generateToken(userId);
 
         return post(urlTemplate)
                 .header("Authorization", "Bearer " + validToken)
                 .contentType(MediaType.APPLICATION_JSON);
+    }
+
+    protected MockHttpServletRequestBuilder buildAuthorizedDeleteRequest(String urlTemplate, Integer userId) {
+        String validToken = jwtHelper.generateToken(userId);
+
+        return delete(urlTemplate)
+                .header("Authorization", "Bearer " + validToken)
+                .contentType(MediaType.APPLICATION_JSON);
+    }
+
+    protected MockHttpServletRequestBuilder buildAuthorizedGetRequest(String urlTemplate, Integer userId) {
+        String validToken = jwtHelper.generateToken(userId);
+
+        return get(urlTemplate)
+                .header("Authorization", "Bearer " + validToken)
+                .contentType(MediaType.APPLICATION_JSON);
+    }
+
+    protected String uriWithIdentifier(String uri, Object value) {
+        return String.format("%s/%s", uri, value);
     }
 
     @TestConfiguration
@@ -106,15 +155,14 @@ public class BaseSpringBootTest {
     @Builder
     @Data
     public static final class CreateUserSummary {
+        @NotNull
         private Integer userId;
 
-        private String name;
-
-        private String surname;
-
-        private LocalDate birthDate;
-
+        @NotNull
         private String email;
+
+        @NotNull
+        private String password;
     }
 
 }
