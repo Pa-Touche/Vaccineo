@@ -2,17 +2,17 @@ package lu.pokevax;
 
 import com.vaadin.spring.annotation.EnableVaadin;
 import lu.pokevax.technical.security.JwtValidationFilter;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableVaadin
 @EnableConfigurationProperties
-@EnableBatchProcessing
+@EnableScheduling
 public class PokevaxApplication {
 
     public static void main(String[] args) {

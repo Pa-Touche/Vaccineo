@@ -1,23 +1,78 @@
 package lu.pokevax.test.integration;
 
-import lu.pokevax.business.notification.VaccineNotificationService;
-import lu.pokevax.business.vaccine.administered.AdministeredVaccineService;
+import lombok.SneakyThrows;
+import lu.pokevax.business.notification.VaccineNotificationRepository;
+import lu.pokevax.business.user.UserPasswordRepository;
+import lu.pokevax.business.vaccine.administered.requests.CreateAdministeredVaccineRequest;
+import lu.pokevax.business.vaccine.administered.responses.AdministeredVaccineResponseWrapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MvcResult;
+
+import java.time.LocalDate;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Meant to check if all {@link lu.pokevax.business.user.UserEntity} "attached" entities are properly deleted.
+ * <p>
+ * Why ? because without full access to Spring beans those tests couldn't be automated.
+ * <p>
  * https://en.wikipedia.org/wiki/White-box_testing.
  */
 public class WhiteBoxDeletionSpringBootTest extends BaseSpringBootTest {
-    @Autowired
-    private AdministeredVaccineService administeredVaccineService;
 
     @Autowired
-    private VaccineNotificationService vaccineNotificationService;
+    private UserPasswordRepository userPasswordRepository;
 
+    @Autowired
+    private VaccineNotificationRepository vaccineNotificationRepository;
+
+    @SneakyThrows
     @Test
     void verify_all_entities_are_deleted() {
+        // PREPARE
+        CreateUserSummary createdUser = createRandomUser();
 
+        Integer userId = createdUser.getUserId();
+        buildAuthorizedPostRequest(VACCINE_URI, userId);
+
+        mockMvc.perform(buildAuthorizedPostRequest(VACCINE_URI, createdUser.getUserId())
+                        .content(toJson(CreateAdministeredVaccineRequest.builder()
+                                .vaccineName(VaccineName.MENINGOCOQUES_ACWY.getDescription())
+                                .doseNumber(1)
+                                .administrationDate(LocalDate.now().minusDays(5))
+                                .build())))
+                .andExpect(status().is2xxSuccessful());
+
+        mockMvc.perform(buildAuthorizedPostRequest(VACCINE_URI, createdUser.getUserId())
+                        .content(toJson(CreateAdministeredVaccineRequest.builder()
+                                .vaccineName(VaccineName.COMBINED_VACCINE_D_T_AP_HIB_IPV_HEP_B.getDescription())
+                                .doseNumber(3)
+                                .administrationDate(LocalDate.now().minusDays(5))
+                                .build())))
+                .andExpect(status().is2xxSuccessful());
+
+        // EXECUTE
+        mockMvc.perform(buildAuthorizedDeleteRequest(uriWithIdentifier(USER_URI, userId), userId))
+                .andExpect(status().is2xxSuccessful());
+
+        // CHECK
+        MvcResult result = mockMvc.perform(buildAuthorizedPostRequest(VACCINE_URI + "/search", createdUser.getUserId()))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        AdministeredVaccineResponseWrapper actual = readJson(result.getResponse(), AdministeredVaccineResponseWrapper.class);
+
+        Assertions.assertThat(actual.getContent())
+                .isEmpty();
+
+        // actual whitebox checks: creates a strong dependency
+        Assertions.assertThat(userPasswordRepository.findByUserEmail(createdUser.getEmail()))
+                .isEmpty();
+
+        Assertions.assertThat(vaccineNotificationRepository.findAllByUserId(userId))
+                .isEmpty();
     }
 }

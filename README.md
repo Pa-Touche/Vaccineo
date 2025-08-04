@@ -44,10 +44,14 @@ IMO JPA model gen should be used to provide type-safety.
 
 ### Batch
 
-To schedule the batch: [Spring Batch](https://spring.io/projects/spring-batch) was used, this works in environments with
+To schedule the batch: Spring's @Scheduled was used, this works in environments with
 a single instance of the service.
 In environments where multiple instances (of same service) coexist something
-like: https://github.com/kagkarlsson/db-scheduler should be preferred.
+like:
+
+- [db-scheduler](https://github.com/kagkarlsson/db-scheduler)
+- [Spring Batch](https://spring.io/projects/spring-batch)
+  should be preferred.
 
 A single job was created that deletes the expired notifications, a second batch could be created that sends an email per
 example a few days before expiration.

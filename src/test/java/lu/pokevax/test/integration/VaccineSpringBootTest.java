@@ -28,7 +28,7 @@ public class VaccineSpringBootTest extends BaseSpringBootTest {
 
         postVaccine(createdUser, CreateAdministeredVaccineRequest.builder()
                 .vaccineName(VaccineName.MENINGOCOQUES_ACWY.getDescription())
-                .comment("Some random comment")
+                .comment("Comment A")
                 .doseNumber(1)
                 .administrationDate(LocalDate.now().minusDays(5))
                 .build());
@@ -64,7 +64,6 @@ public class VaccineSpringBootTest extends BaseSpringBootTest {
         LocalDate administrationDate = LocalDate.now().minusDays(5);
         postVaccine(createdUser, CreateAdministeredVaccineRequest.builder()
                 .vaccineName(VaccineName.MENINGOCOQUES_ACWY.getDescription())
-                .comment("Some random comment")
                 .doseNumber(1)
                 .administrationDate(administrationDate)
                 .build());
@@ -97,7 +96,7 @@ public class VaccineSpringBootTest extends BaseSpringBootTest {
         LocalDate administrationDate = LocalDate.now().minusDays(5);
         postVaccine(createdUser, CreateAdministeredVaccineRequest.builder()
                 .vaccineName(VaccineName.RSV.getDescription())
-                .comment("Some random comment")
+                .comment("no comment")
                 .doseNumber(1)
                 .administrationDate(administrationDate)
                 .build());
