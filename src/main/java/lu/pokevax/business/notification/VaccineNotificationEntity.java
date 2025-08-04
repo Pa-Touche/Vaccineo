@@ -32,7 +32,7 @@ public class VaccineNotificationEntity extends BaseEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "vaccine_schedule_id")
     private VaccineScheduleEntity vaccineScheduleEntity;
 

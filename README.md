@@ -1,5 +1,27 @@
 # Pokévax
 
+Pokévax is a Java (8) Spring Boot 2.7.18 web application that handle users and their vaccine schedule.
+
+This project is not meant to be used as-is in PROD, mostly due to security issues.
+
+## Requirements
+
+### Business
+
+- Notifications
+  - Persisted in DB ?
+  - Cronjob ?
+  - On connection ?
+- Login screen: (without auth so far)
+  - Login already account
+  - Create account
+- Delete account
+
+### Technical
+
+- Java 8
+- Vaadin 8
+
 ## Glossary
 
 - (T) => not done / TODO
@@ -8,7 +30,6 @@
 
 ## TO-DOs
 
-- Add missing indexes on foreign keys
 - Spellcheck documentation
 - Create common config for mapstruct
 
@@ -20,6 +41,16 @@ The request is not paginated as it's not expected that avery huge amount of vacc
 In PROD additional checks should be added.
 
 IMO JPA model gen should be used to provide type-safety.
+
+### Batch
+
+To schedule the batch: [Spring Batch](https://spring.io/projects/spring-batch) was used, this works in environments with
+a single instance of the service.
+In environments where multiple instances (of same service) coexist something
+like: https://github.com/kagkarlsson/db-scheduler should be preferred.
+
+A single job was created that deletes the expired notifications, a second batch could be created that sends an email per
+example a few days before expiration.
 
 ### Security
 
@@ -144,32 +175,7 @@ inserts without round-trip to DBs (best to use one/mulitple common sequences so 
     - Inheriting BaseClass
     - Follows naming conventions
 - Logging: Create AOP annotation to enable default logging.
-
-## Requirements
-
-### Business
-
-- Notifications 
-  - Persisted in DB ? 
-  - Cronjob ?
-  - On connection ? 
-- Login screen: (without auth so far)
-  - Login already account
-  - Create account
-- Delete account
-
-
-### Technical 
-
-- Java 8
-- Vaadin 8
-
-
-### (Optional) Ideas
-
 - I18N: internationalization
-- GDPR-compliance: 
-  - Being able to extract all data as JSON
 
 ## Useful links
 
