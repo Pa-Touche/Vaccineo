@@ -16,23 +16,32 @@
 package lu.pokevax.ui.views;
 
 import com.vaadin.annotations.Title;
+import com.vaadin.data.provider.GridSortOrder;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import lombok.RequiredArgsConstructor;
 import lu.pokevax.business.vaccine.VaccineController;
+import lu.pokevax.business.vaccine.administered.VaccineSortableField;
 import lu.pokevax.business.vaccine.administered.requests.CreateAdministeredVaccineRequest;
+import lu.pokevax.business.vaccine.administered.requests.SearchVaccineCriteria;
 import lu.pokevax.business.vaccine.administered.requests.SearchVaccineRequest;
+import lu.pokevax.business.vaccine.administered.requests.SortRequest;
 import lu.pokevax.business.vaccine.administered.responses.AdministeredVaccineResponse;
 import lu.pokevax.business.vaccine.administered.responses.AdministeredVaccineResponseWrapper;
 import lu.pokevax.business.vaccine.administered.responses.VaccineTypeResponseWrapper;
 import lu.pokevax.ui.components.ComponentsFactory;
 import lu.pokevax.ui.helpers.HttpClientHelper;
+import org.springframework.data.domain.Sort;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashMap;
 
 @SpringView(name = DashboardView.VIEW_PATH)
 @Title("Dashboard | Pokevax")
@@ -40,10 +49,11 @@ import java.time.LocalDate;
 public class DashboardView extends VerticalLayout implements View {
 
     public static final String VIEW_PATH = "dashboard";
+    public static final SearchVaccineRequest DEFAULT_SEARCH = new SearchVaccineRequest();
 
     private final HttpClientHelper httpClientHelper;
 
-    private Grid<AdministeredVaccineResponse> vaccineGrid = new Grid<>(AdministeredVaccineResponse.class);
+    private final Grid<AdministeredVaccineResponse> vaccineGrid = new Grid<>(AdministeredVaccineResponse.class);
 
     @PostConstruct
     public void init() {
@@ -60,14 +70,47 @@ public class DashboardView extends VerticalLayout implements View {
         addVaccineBtn.addStyleName(ValoTheme.BUTTON_PRIMARY);
         addVaccineBtn.addClickListener(ignored -> openAddVaccineModal());
 
+        TextField filterName = new TextField();
+        filterName.setPlaceholder("Filtrer par nom");
+
+        DateField filterDate = new DateField();
+        filterDate.setPlaceholder("Filtrer par date");
+
+        TextField filterDose = new TextField();
+        filterDose.setPlaceholder("Filtrer par dose");
+
+        Button applyFilters = new Button("Appliquer les filtres", e -> {
+            SearchVaccineCriteria criteria = SearchVaccineCriteria.builder()
+                    .vaccineName(filterName.getValue().isEmpty() ? null : filterName.getValue())
+                    .administrationDate(filterDate.getValue())
+                    .doseNumber(parseDoseNumber(filterDose.getValue()))
+                    .build();
+
+            SearchVaccineRequest req = SearchVaccineRequest.builder()
+                    .criteria(criteria)
+                    .build();
+
+            loadVaccines(req);
+        });
+
+        Button resetFilters = new Button("Réinitialiser les filtres", e -> {
+            filterName.clear();
+            filterDate.clear();
+            filterDose.clear();
+
+            applyFilters.click();
+        });
+
+        HorizontalLayout filtersLayout = new HorizontalLayout(filterName, filterDate, filterDose, applyFilters, resetFilters);
+
         HorizontalLayout header = new HorizontalLayout(title, addVaccineBtn);
         header.setWidthFull();
-        ;
+
         header.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
         header.setComponentAlignment(addVaccineBtn, Alignment.MIDDLE_RIGHT);
         header.setExpandRatio(title, 1);
 
-        addComponents(header, vaccineGrid);
+        addComponents(header, filtersLayout, vaccineGrid);
         setExpandRatio(vaccineGrid, 1);
 
         configureGrid();
@@ -75,28 +118,77 @@ public class DashboardView extends VerticalLayout implements View {
     }
 
     private void configureGrid() {
-        vaccineGrid.setSizeFull();
-        vaccineGrid.setColumns("vaccineName", "administrationDate", "doseNumber", "comment");
 
-//        vaccineGrid.getColumn("administrationDate")
-//                .setRenderer(new DateRenderer("yyyy-MM-dd"));
+        vaccineGrid.setSizeFull();
+        String vaccineNameColumn = "vaccineName";
+        String administrationDateColumn = "administrationDate";
+        String doseNumberColumn = "doseNumber";
+        String commentColumn = "comment";
+
+        vaccineGrid.setColumns(vaccineNameColumn, administrationDateColumn, doseNumberColumn, commentColumn);
+
+        HashMap<String, VaccineSortableField> dictionary = new HashMap<>();
+        dictionary.put(vaccineNameColumn, VaccineSortableField.VACCINE_NAME);
+        dictionary.put(administrationDateColumn, VaccineSortableField.ADMINISTRATION_DATE);
+        dictionary.put(doseNumberColumn, VaccineSortableField.DOSE_NUMBER);
+        dictionary.put(commentColumn, VaccineSortableField.COMMENT);
+
+        vaccineGrid.getColumn(vaccineNameColumn).setCaption("Nom du vaccin");
+        vaccineGrid.getColumn(administrationDateColumn).setCaption("Date d'administration");
+        vaccineGrid.getColumn(doseNumberColumn).setCaption("Numéro de dose");
+        vaccineGrid.getColumn(commentColumn).setCaption("Commentaire");
 
         vaccineGrid.setColumnReorderingAllowed(true);
-//        vaccineGrid.setSortable(true);
         vaccineGrid.setSelectionMode(Grid.SelectionMode.NONE);
+
+        // Add sorting listener
+        vaccineGrid.addSortListener(event -> {
+            if (!event.getSortOrder().isEmpty()) {
+                GridSortOrder<AdministeredVaccineResponse> order = event.getSortOrder().get(0);
+                String sortProperty = order.getSorted().getId(); // should match VaccineSortableField
+
+                Sort.Direction direction = order.getDirection() == SortDirection.ASCENDING
+                        ? Sort.Direction.ASC
+                        : Sort.Direction.DESC;
+
+                SearchVaccineRequest request = SearchVaccineRequest.builder()
+                        .sort(SortRequest.builder()
+                                .direction(direction)
+                                .fields(Collections.singletonList(
+                                        dictionary.get(sortProperty) // ensure names match!
+                                ))
+                                .build())
+                        .build();
+
+                loadVaccines(request);
+            }
+        });
     }
 
+    private Integer parseDoseNumber(String value) {
+        try {
+            return value == null || value.trim().isEmpty() ? null : Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return null; // or show a warning
+        }
+    }
+
+
     private void loadVaccines() {
+        loadVaccines(DEFAULT_SEARCH);
+    }
+
+    private void loadVaccines(SearchVaccineRequest request) {
         try {
             HttpClientHelper.HttpResponse<AdministeredVaccineResponseWrapper> response = httpClientHelper.post(HttpClientHelper.PostRequest.<SearchVaccineRequest, AdministeredVaccineResponseWrapper>builder()
                     .endpoint(VaccineController.URI + "/search")
-                    .body(new SearchVaccineRequest())
+                    .body(request)
                     .returnType(AdministeredVaccineResponseWrapper.class)
                     .build());
 
             // TODO: handle error.
 
-            vaccineGrid.setItems(response.getData().getContent());
+            vaccineGrid.setDataProvider(new ListDataProvider<>(response.getData().getContent()));
         } catch (Exception e) {
             Notification.show("Failed to load vaccines: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
         }

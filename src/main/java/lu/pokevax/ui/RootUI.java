@@ -8,6 +8,7 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.UI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lu.pokevax.ui.helpers.GlobalErrorHandler;
 import lu.pokevax.ui.helpers.SessionWrapper;
 
 @SpringUI(path = "") // Root path
@@ -18,9 +19,12 @@ public class RootUI extends UI {
 
     private final ViewProvider viewProvider;
     private final SessionWrapper sessionWrapper;
+    private final GlobalErrorHandler globalErrorHandler;
 
     @Override
     protected void init(VaadinRequest request) {
+        setErrorHandler(globalErrorHandler);
+
         Navigator navigator = new Navigator(this, this);
         navigator.addProvider(viewProvider);
 
