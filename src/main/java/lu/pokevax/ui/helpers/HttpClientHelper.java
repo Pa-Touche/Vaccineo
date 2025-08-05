@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 // TODO: contains too much duplication
 @Component
@@ -76,7 +77,7 @@ public class HttpClientHelper {
         }
     }
 
-    private static String getBaseUrl() {
+    public static String getBaseUrl() {
         VaadinRequest vaadinRequest = VaadinService.getCurrentRequest();
         HttpServletRequest request = ((VaadinServletRequest) vaadinRequest).getHttpServletRequest();
         String url = request.getRequestURL().toString();
@@ -88,14 +89,25 @@ public class HttpClientHelper {
 
     public <R> HttpResponse<R> get(GetRequest<R> request) {
         try {
-            URL url = new URL(getBaseUrl() + request.getEndpoint());
+            // this was added for async purposes.
+            String spec;
+            if (StringUtils.isNotEmpty(request.getFullEndpoint())) {
+                spec = request.getFullEndpoint();
+            } else {
+                spec = getBaseUrl() + request.getEndpoint();
+            }
+
+            URL url = new URL(spec);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod(HttpMethod.GET.name());
             conn.setDoOutput(true);
 
-            if (sessionWrapper.isAuthenticated()) {
-                conn.setRequestProperty(HttpHeaders.AUTHORIZATION, "Bearer " + sessionWrapper.getToken());
+            String requestToken = request.getToken();
+            if (StringUtils.isNotEmpty(requestToken) || sessionWrapper.isAuthenticated()) {
+                conn.setRequestProperty(HttpHeaders.AUTHORIZATION, "Bearer " + Optional.ofNullable(requestToken)
+                        .filter(StringUtils::isNotEmpty)
+                        .orElseGet(sessionWrapper::getToken));
             }
 
             int code = conn.getResponseCode();
@@ -180,11 +192,17 @@ public class HttpClientHelper {
     @Builder
     @Data
     public static final class GetRequest<R> {
-        @NotNull
+        @Nullable
         private final String endpoint;
 
         @Nullable
+        private final String fullEndpoint;
+
+        @Nullable
         private final Class<R> returnType;
+
+        @Nullable
+        private final String token;
     }
 
     @Builder
