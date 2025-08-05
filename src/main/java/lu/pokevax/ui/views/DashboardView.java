@@ -154,7 +154,7 @@ public class DashboardView extends VerticalLayout implements View {
 
                     // Update UI in the UI thread
                     current.access(() ->
-                            Notification.show(message.toString(), "Description", Notification.Type.TRAY_NOTIFICATION)
+                            Notification.show("Notifications de vaccins", message.toString(), Notification.Type.TRAY_NOTIFICATION)
                     );
                 }
 

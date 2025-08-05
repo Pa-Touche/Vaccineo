@@ -1,7 +1,9 @@
 package lu.pokevax.ui;
 
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.navigator.ViewProvider;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
@@ -15,6 +17,7 @@ import lu.pokevax.ui.helpers.SessionWrapper;
 @Theme("valo")
 @RequiredArgsConstructor
 @Slf4j
+@Push
 public class RootUI extends UI {
 
     private final ViewProvider viewProvider;
@@ -34,5 +37,26 @@ public class RootUI extends UI {
         } else {
             getNavigator().navigateTo("dashboard");
         }
+
+        // not perfect, somewhat still does some calls.
+        navigator.addViewChangeListener(new ViewChangeListener() {
+            @Override
+            public boolean beforeViewChange(ViewChangeEvent event) {
+                boolean isAuthenticated = sessionWrapper.isAuthenticated();
+                String viewName = event.getViewName();
+
+                if (!isAuthenticated && !viewName.equals("login")) {
+                    navigator.navigateTo("login");
+                    return false;
+                }
+
+                return true;
+            }
+
+            @Override
+            public void afterViewChange(ViewChangeListener.ViewChangeEvent event) {
+                // Optional: actions after view change
+            }
+        });
     }
 }

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import lu.pokevax.business.user.UserController;
 import lu.pokevax.business.user.login.LoginController;
 import lu.pokevax.technical.web.WebTokenExtractor;
+import org.apache.commons.lang3.Strings;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,11 @@ public class JwtValidationFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         String requestURI = request.getRequestURI();
-        if (LoginController.URI.equals(requestURI) || (UserController.URI.equals(requestURI) && HttpMethod.POST.name().equals(request.getMethod()))) {
+
+        // every API called must be checked for the presence of a token except user creation and login.
+        if (LoginController.URI.equals(requestURI)
+                || (UserController.URI.equals(requestURI) && HttpMethod.POST.name().equals(request.getMethod()))
+                || !Strings.CS.contains(requestURI, "/api")) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }

@@ -30,9 +30,18 @@ This project is not meant to be used as-is in PROD, mostly due to security issue
 
 ## TO-DOs
 
-- Spellcheck documentation
-- Create common config for mapstruct
+- "CSS" issues:
+  - Profile not same height as dashboard
+  - menu bar not width enough
+- Performance:
+  - Check EAGER loaded elements
+- Error messages:
+  - ConstraintViolation handling: show above form in frontend ?
+  - notifications
+  - Exception: show message ?
 - Check for invalid vaccine name / dosis number
+- Create common config for mapstruct
+- Spellcheck documentation
 - Go over package structure / naming
 
 ## Features description 
