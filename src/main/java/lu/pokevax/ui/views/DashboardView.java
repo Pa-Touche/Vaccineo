@@ -137,7 +137,7 @@ public class DashboardView extends VerticalLayout implements View {
             try {
 
                 httpClientHelper.post(HttpClientHelper.PostRequest.<CreateAdministeredVaccineRequest, Integer>builder()
-                        .endpoint(VaccineController.URI + "/search")
+                        .endpoint(VaccineController.URI)
                         .body(CreateAdministeredVaccineRequest.builder()
                                 .administrationDate(adminDate.getValue())
                                 .doseNumber(Integer.parseInt(doseNumber.getValue()))

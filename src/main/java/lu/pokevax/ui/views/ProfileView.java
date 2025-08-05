@@ -72,7 +72,7 @@ public class ProfileView extends VerticalLayout implements View {
                 try {
                     httpClientHelper.delete(UserController.URI + String.format("/%s", user.getId()));
                     Notification.show("Compte supprimé", Notification.Type.WARNING_MESSAGE);
-                    UI.getCurrent().getPage().setLocation("/");
+                    UI.getCurrent().getNavigator().navigateTo(LoginSignupView.VIEW_PATH);
                 } catch (Exception e) {
                     Notification.show("Échec de la suppression: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
                 }

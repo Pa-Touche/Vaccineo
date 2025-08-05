@@ -110,10 +110,10 @@ public class LoginSignupView extends VerticalLayout implements View {
         layout.setMargin(true);
         layout.setWidthFull();
 
-        TextField nameField = new TextField("Prénom");
+        TextField nameField = new TextField("Nom de famille");
         nameField.setRequiredIndicatorVisible(true);
 
-        TextField surnameField = new TextField("Nom de famille");
+        TextField surnameField = new TextField("Prénom");
         surnameField.setRequiredIndicatorVisible(true);
 
         DateField birthDateField = new DateField("Date de naissance");
@@ -158,6 +158,9 @@ public class LoginSignupView extends VerticalLayout implements View {
                         .returnType(Integer.class)
                         .build());
                 Notification.show("Le compte à été créer avec succès", Notification.Type.TRAY_NOTIFICATION);
+
+                UI.getCurrent().getNavigator().navigateTo(LoginSignupView.VIEW_PATH);
+
             } catch (Exception ex) {
                 Notification.show("Le compte n'as pas pu être créer: " + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
             }

@@ -17,7 +17,7 @@ import java.util.Base64;
 public class PasswordHelper {
 
     private static final SecureRandom RAND = new SecureRandom();
-    private static final int ITERATIONS_NUMBER = 50_000; // 310_000 is recommended by OWASP but slow
+    private static final int ITERATIONS_NUMBER = 310_000; // 310_000 is recommended by OWASP
     private static final int KEY_LENGTH_BITS = 256;
 
     // The way the application is designed, this cannot be modified ad-hoc. Using Spring Security it's doable
