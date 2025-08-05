@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Slf4j
 public class UserController {
 
-    public static final String URI = "/users";
+    public static final String URI = "/api/users";
 
     private final UserService service;
 

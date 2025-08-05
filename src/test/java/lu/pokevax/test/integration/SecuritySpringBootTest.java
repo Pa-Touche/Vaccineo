@@ -56,7 +56,7 @@ public class SecuritySpringBootTest extends BaseSpringBootTest {
                                 .email("valid@mail.de")
                                 .password("some_password")
                                 .build())))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -69,6 +69,6 @@ public class SecuritySpringBootTest extends BaseSpringBootTest {
                                 .email(randomUser.getEmail())
                                 .password("***some_password***")
                                 .build())))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isBadRequest());
     }
 }

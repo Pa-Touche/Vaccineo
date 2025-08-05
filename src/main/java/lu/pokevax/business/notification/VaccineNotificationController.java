@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class VaccineNotificationController {
-    public static final String URI = "/vaccines/notifications";
+    public static final String URI = "/api/vaccines/notifications";
 
     private final VaccineNotificationService service;
     private final WebTokenExtractor webTokenExtractor;

@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import lu.pokevax.business.notification.VaccineNotificationResponse;
 import lu.pokevax.business.notification.VaccineNotificationResponseWrapper;
 import lu.pokevax.business.user.requests.CreateUserRequest;
+import lu.pokevax.test.RandomDataUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MvcResult;
@@ -21,8 +22,8 @@ public class VaccineNotificationSpringBootTest extends BaseSpringBootTest {
         // using a "new-born" allows to create all notifications
         CreateUserRequest request = CreateUserRequest.builder()
                 .birthDate(LocalDate.now().minusDays(1))
-                .email("mail@mail.fr")
-                .name("name")
+                .email(RandomDataUtils.emailAddress())
+                .name(RandomDataUtils.emailAddress())
                 .surname("surname")
                 .password("password")
                 .build();

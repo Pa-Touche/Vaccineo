@@ -33,6 +33,7 @@ This project is not meant to be used as-is in PROD, mostly due to security issue
 - Spellcheck documentation
 - Create common config for mapstruct
 - Check for invalid vaccine name / dosis number
+- Go over package structure / naming
 
 ## Features description 
 
@@ -181,6 +182,9 @@ inserts without round-trip to DBs (best to use one/mulitple common sequences so 
     - Follows naming conventions
 - Logging: Create AOP annotation to enable default logging.
 - I18N: internationalization
+- Handle security token expiration:
+    - User must connect again ?
+    - Auto-refresh if still 'using' the system ?
 
 ## Useful links
 

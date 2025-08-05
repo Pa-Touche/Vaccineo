@@ -9,7 +9,7 @@ import org.hibernate.type.StringType;
 import java.sql.Types;
 
 /**
- * SQL lite is not natively supported in {@link org.hibernate.Hibernate} 5.x, but there is a open-source support for
+ * SQL lite is not natively supported in {@link org.hibernate.Hibernate} 5.x, but there is a open-source support for Hibernate 6.+
  */
 public class SQLiteDialect extends Dialect {
 

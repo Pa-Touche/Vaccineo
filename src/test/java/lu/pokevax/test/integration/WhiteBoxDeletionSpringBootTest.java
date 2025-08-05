@@ -6,6 +6,7 @@ import lu.pokevax.business.notification.VaccineNotificationResponseWrapper;
 import lu.pokevax.business.user.UserPasswordRepository;
 import lu.pokevax.business.vaccine.administered.requests.CreateAdministeredVaccineRequest;
 import lu.pokevax.business.vaccine.administered.responses.AdministeredVaccineResponseWrapper;
+import lu.pokevax.test.VaccineName;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

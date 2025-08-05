@@ -9,9 +9,11 @@ import lu.pokevax.business.notification.VaccineNotificationController;
 import lu.pokevax.business.user.UserController;
 import lu.pokevax.business.user.login.LoginController;
 import lu.pokevax.business.user.login.LoginRequest;
+import lu.pokevax.business.user.login.LoginResponse;
 import lu.pokevax.business.user.requests.CreateUserRequest;
-import lu.pokevax.business.vaccine.administered.AdministeredVaccineController;
+import lu.pokevax.business.vaccine.VaccineController;
 import lu.pokevax.technical.security.JwtHelper;
+import lu.pokevax.test.RandomDataUtils;
 import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
@@ -45,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(value = BaseSpringBootTest.CommonBaseConfiguration.class)
 public class BaseSpringBootTest {
 
-    protected String VACCINE_URI = AdministeredVaccineController.URI;
+    protected String VACCINE_URI = VaccineController.URI;
     protected String VACCINE_NOTIFICATIONS_URI = VaccineNotificationController.URI;
     protected String USER_URI = UserController.URI;
     protected String LOGIN_URI = LoginController.URI;
@@ -93,12 +95,12 @@ public class BaseSpringBootTest {
     }
 
     @SneakyThrows
-    public String login(CreateUserSummary createUserSummary) {
+    public LoginResponse login(CreateUserSummary createUserSummary) {
         return login(createUserSummary.getEmail(), createUserSummary.getPassword());
     }
 
     @SneakyThrows
-    public String login(String email, String password) {
+    public LoginResponse login(String email, String password) {
         MvcResult result = mockMvc.perform(post(LOGIN_URI)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(LoginRequest.builder()
@@ -108,7 +110,7 @@ public class BaseSpringBootTest {
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
-        return result.getResponse().getContentAsString();
+        return readJson(result.getResponse(), LoginResponse.class);
     }
 
     @SneakyThrows

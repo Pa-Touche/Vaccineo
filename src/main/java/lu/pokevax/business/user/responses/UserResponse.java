@@ -13,6 +13,9 @@ import java.time.LocalDate;
 @Builder
 public class UserResponse {
     @NotNull
+    private Integer id;
+
+    @NotNull
     private String name;
 
     @NotNull

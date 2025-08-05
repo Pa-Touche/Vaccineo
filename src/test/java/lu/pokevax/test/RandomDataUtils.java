@@ -1,4 +1,4 @@
-package lu.pokevax.test.integration;
+package lu.pokevax.test;
 
 import com.github.javafaker.Faker;
 import lombok.experimental.UtilityClass;

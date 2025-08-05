@@ -1,4 +1,4 @@
-package lu.pokevax.test.integration;
+package lu.pokevax.test;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

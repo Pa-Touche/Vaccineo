@@ -7,6 +7,7 @@ import lu.pokevax.business.vaccine.administered.requests.SearchVaccineRequest;
 import lu.pokevax.business.vaccine.administered.requests.SortRequest;
 import lu.pokevax.business.vaccine.administered.responses.AdministeredVaccineResponse;
 import lu.pokevax.business.vaccine.administered.responses.AdministeredVaccineResponseWrapper;
+import lu.pokevax.test.VaccineName;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Sort;

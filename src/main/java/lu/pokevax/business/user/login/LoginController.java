@@ -16,14 +16,17 @@ import javax.validation.Valid;
 @Slf4j
 public class LoginController {
 
-    public static final String URI = "/login";
+    public static final String URI = "/api/login";
 
     private final LoginService service;
 
     @PostMapping
-    public String login(@RequestBody @Valid LoginRequest request) {
+    public LoginResponse login(@RequestBody @Valid LoginRequest request) {
         return service.validCredentials(request)
-                .map(service::generateToken)
+                .map(userId -> LoginResponse.builder()
+                        .token(service.generateToken(userId))
+                        .userId(userId)
+                        .build())
                 .orElseThrow(() -> new InvalidPasswordException(String.format("Invalid password provided for email: '%s'", request.getEmail())));
     }
 }

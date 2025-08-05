@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import lu.pokevax.business.user.UserEntity;
 import lu.pokevax.business.user.UserService;
 import lu.pokevax.business.vaccine.VaccineTypeEntity;
+import lu.pokevax.business.vaccine.VaccineTypeNameOnlyProjection;
 import lu.pokevax.business.vaccine.VaccineTypeRepository;
 import lu.pokevax.business.vaccine.administered.requests.CreateAdministeredVaccineRequest;
 import lu.pokevax.business.vaccine.administered.requests.SearchVaccineCriteria;
@@ -108,5 +109,11 @@ public class AdministeredVaccineService {
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
 
+    }
+
+    public List<String> retrieveVaccineTypes() {
+        return vaccineTypeRepository.findAllProjectedBy().stream()
+                .map(VaccineTypeNameOnlyProjection::getName)
+                .collect(Collectors.toList());
     }
 }

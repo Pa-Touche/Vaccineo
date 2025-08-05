@@ -1,12 +1,15 @@
-package lu.pokevax.business.vaccine.administered;
+package lu.pokevax.business.vaccine;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lu.pokevax.business.vaccine.administered.AdministeredVaccineService;
 import lu.pokevax.business.vaccine.administered.requests.CreateAdministeredVaccineRequest;
 import lu.pokevax.business.vaccine.administered.requests.SearchVaccineRequest;
 import lu.pokevax.business.vaccine.administered.responses.AdministeredVaccineResponseWrapper;
+import lu.pokevax.business.vaccine.administered.responses.VaccineTypeResponseWrapper;
 import lu.pokevax.technical.ValidatedRestController;
 import lu.pokevax.technical.web.WebTokenExtractor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,16 +18,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @ValidatedRestController
-@RequestMapping(value = AdministeredVaccineController.URI)
+@RequestMapping(value = VaccineController.URI)
 @RequiredArgsConstructor
 @Slf4j
-public class AdministeredVaccineController {
+public class VaccineController {
 
-    public static final String URI = "/vaccines";
+    public static final String URI = "/api/vaccines";
 
     private final AdministeredVaccineService service;
     private final WebTokenExtractor webTokenExtractor;
 
+
+    @GetMapping("/types")
+    public VaccineTypeResponseWrapper retrieveVaccineTypes() {
+        return VaccineTypeResponseWrapper.builder()
+                .content(service.retrieveVaccineTypes())
+                .build();
+    }
 
     @PostMapping
     public Integer create(HttpServletRequest httpServletRequest,

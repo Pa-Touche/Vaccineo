@@ -46,6 +46,7 @@ public class UserSpringBootTest extends BaseSpringBootTest {
 
         Assertions.assertThat(actual)
                 .usingRecursiveComparison()
+                .ignoringFields("id")
                 .isEqualTo(request);
     }
 
