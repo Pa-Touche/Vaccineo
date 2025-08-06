@@ -21,6 +21,8 @@ import lu.pokevax.ui.helpers.SessionWrapper;
 @Push
 public class RootUI extends UI {
 
+    public static final String DATE_FORMAT = "dd/MM/yyyy";
+
     private final ViewProvider viewProvider;
     private final SessionWrapper sessionWrapper;
     private final GlobalErrorHandler globalErrorHandler;

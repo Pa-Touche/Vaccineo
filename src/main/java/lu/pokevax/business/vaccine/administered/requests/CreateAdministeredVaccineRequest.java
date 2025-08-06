@@ -23,6 +23,7 @@ public class CreateAdministeredVaccineRequest {
     private String vaccineName;
 
     @PastOrPresent
+    @NotNull
     private LocalDate administrationDate;
 
     @NotNull

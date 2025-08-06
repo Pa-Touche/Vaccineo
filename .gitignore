@@ -14,6 +14,7 @@ deps.txt
 notebook.csv
 
 data/sqlite-database.db
+data/spring-test-sqlite-database.db
 
 ### STS ###
 .apt_generated

@@ -107,7 +107,6 @@ public class UserSpringBootTest extends BaseSpringBootTest {
     }
 
 
-
     @Test
     void invalid_request_empty_payload() {
         // TODO: rewrite using mockMVC

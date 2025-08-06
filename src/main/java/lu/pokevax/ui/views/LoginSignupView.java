@@ -13,6 +13,7 @@ import lu.pokevax.business.user.login.LoginController;
 import lu.pokevax.business.user.login.LoginRequest;
 import lu.pokevax.business.user.login.LoginResponse;
 import lu.pokevax.business.user.requests.CreateUserRequest;
+import lu.pokevax.ui.RootUI;
 import lu.pokevax.ui.helpers.HttpClientHelper;
 import lu.pokevax.ui.helpers.SessionWrapper;
 import org.apache.commons.lang3.StringUtils;
@@ -40,15 +41,10 @@ public class LoginSignupView extends VerticalLayout implements View {
         setSpacing(true);
         setMargin(true);
 
-        // 💡 Add App Title
-        Label title = new Label("Pokevax");
-        title.setStyleName(ValoTheme.LABEL_H1 + " " + ValoTheme.LABEL_COLORED);
-        title.setHeight("50%");
-        addComponent(title);
+        addComponent(buildTitle());
 
-        // 🧱 Wider tab container
         TabSheet tabs = new TabSheet();
-        tabs.setWidth("600px"); // wider
+        tabs.setWidth("600px");
         tabs.setHeight("100%");
 
         VerticalLayout loginTab = buildLoginTab();
@@ -61,8 +57,18 @@ public class LoginSignupView extends VerticalLayout implements View {
         addComponent(tabs);
     }
 
+    private static Label buildTitle() {
+        Label title = new Label("Pokevax");
+
+        title.setStyleName(ValoTheme.LABEL_H1 + " " + ValoTheme.LABEL_COLORED);
+        title.setHeight("50%");
+
+        return title;
+    }
+
     private VerticalLayout buildLoginTab() {
         VerticalLayout layout = new VerticalLayout();
+
         layout.setSpacing(true);
         layout.setMargin(true);
         layout.setWidthFull();
@@ -71,20 +77,17 @@ public class LoginSignupView extends VerticalLayout implements View {
         PasswordField password = new PasswordField("Mot de passe");
         Button loginBtn = new Button("Connexion");
 
-        // Consistent width and style
-        email.setWidthFull();
-        password.setWidthFull();
-        loginBtn.setWidthFull();
+        Stream.of(email, password, loginBtn).forEach(AbstractComponent::setWidthFull);
+
         loginBtn.setStyleName(ValoTheme.BUTTON_PRIMARY);
 
-        loginBtn.addClickListener(clickEvent -> {
-            performLogin(StringUtils.toRootLowerCase(StringUtils.trim(email.getValue())), password.getValue());
-        });
+        loginBtn.addClickListener(clickEvent -> performLogin(StringUtils.toRootLowerCase(StringUtils.trim(email.getValue())), password.getValue()));
 
+        // simulate same behavior when hitting enter, than when clicking loginBtn.
         loginBtn.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
-
         layout.addComponents(email, password, loginBtn);
+
         return layout;
     }
 
@@ -120,32 +123,27 @@ public class LoginSignupView extends VerticalLayout implements View {
         layout.setWidthFull();
 
         TextField nameField = new TextField("Nom de famille");
-        nameField.setRequiredIndicatorVisible(true);
 
         TextField surnameField = new TextField("Prénom");
-        surnameField.setRequiredIndicatorVisible(true);
 
-        DateField birthDateField = new DateField("Date de naissance");
-        birthDateField.setRequiredIndicatorVisible(true);
-        birthDateField.setDateFormat("dd/MM/yyyy");
-        birthDateField.setRangeEnd(LocalDate.now());
+        DateField birthDateField = buildBirthDateField();
 
         TextField emailField = new TextField("Email");
-        emailField.setRequiredIndicatorVisible(true);
 
         PasswordField passwordField = new PasswordField("Mot de passe");
-        passwordField.setRequiredIndicatorVisible(true);
 
         Button signupBtn = new Button("Créer un compte");
         Supplier<Stream<? extends AbstractField<? extends Serializable>>> fields = () -> Stream.of(nameField, surnameField, birthDateField, emailField, passwordField);
 
-        fields.get().forEach(AbstractComponent::setWidthFull);
+        fields.get().forEach(field -> {
+            field.setWidthFull();
+            field.setRequiredIndicatorVisible(true);
+        });
 
         signupBtn.addClickListener(e -> {
-            // Basic validation
             if (fields.get()
                     .anyMatch(HasValue::isEmpty)) {
-                Notification.show("Please fill in all fields", Notification.Type.WARNING_MESSAGE);
+                Notification.show("Tous les champs sont obligatoires", Notification.Type.WARNING_MESSAGE);
                 return;
             }
 
@@ -170,8 +168,6 @@ public class LoginSignupView extends VerticalLayout implements View {
                 }
 
                 Notification.show("Le compte à été créer avec succès", Notification.Type.TRAY_NOTIFICATION);
-
-//                UI.getCurrent().getNavigator().navigateTo(LoginSignupView.VIEW_PATH);
 
                 performLogin(emailTextValue, passwordTextValue);
 
@@ -198,6 +194,16 @@ public class LoginSignupView extends VerticalLayout implements View {
         );
 
         return layout;
+    }
+
+    private static DateField buildBirthDateField() {
+        DateField birthDateField = new DateField("Date de naissance");
+
+        birthDateField.setRequiredIndicatorVisible(true);
+        birthDateField.setDateFormat(RootUI.DATE_FORMAT);
+        birthDateField.setRangeEnd(LocalDate.now());
+
+        return birthDateField;
     }
 
 

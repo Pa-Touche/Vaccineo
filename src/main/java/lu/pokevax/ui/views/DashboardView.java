@@ -16,6 +16,7 @@
 package lu.pokevax.ui.views;
 
 import com.vaadin.annotations.Title;
+import com.vaadin.data.HasValue;
 import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.navigator.View;
@@ -36,6 +37,7 @@ import lu.pokevax.business.vaccine.administered.requests.SortRequest;
 import lu.pokevax.business.vaccine.administered.responses.AdministeredVaccineResponse;
 import lu.pokevax.business.vaccine.administered.responses.AdministeredVaccineResponseWrapper;
 import lu.pokevax.business.vaccine.administered.responses.VaccineTypeResponseWrapper;
+import lu.pokevax.ui.RootUI;
 import lu.pokevax.ui.components.ComponentsFactory;
 import lu.pokevax.ui.helpers.HttpClientHelper;
 import lu.pokevax.ui.helpers.SessionWrapper;
@@ -47,6 +49,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 @SpringView(name = DashboardView.VIEW_PATH)
 @Title("Dashboard | Pokevax")
@@ -77,17 +80,51 @@ public class DashboardView extends VerticalLayout implements View {
         addVaccineBtn.addStyleName(ValoTheme.BUTTON_PRIMARY);
         addVaccineBtn.addClickListener(ignored -> openAddVaccineModal());
 
-        TextField filterName = new TextField();
-        filterName.setPlaceholder("Filtrer par nom");
+        TextField filterVaccineName = new TextField();
+        filterVaccineName.setPlaceholder("Filtrer par nom");
 
-        DateField filterDate = new DateField();
-        filterDate.setDateFormat("dd/MM/yyyy");
-        filterDate.setPlaceholder("Filtrer par date");
+        DateField filterAdministeredDate = buildFilterDate();
 
-        TextField filterDose = new TextField();
-        filterDose.setPlaceholder("Filtrer par dose");
+        TextField filterDoseNumber = new TextField();
+        filterDoseNumber.setPlaceholder("Filtrer par dose");
 
-        Button applyFilters = new Button("Appliquer les filtres", e -> {
+        Button applyFilters = buildApplyFiltersButton(filterVaccineName, filterAdministeredDate, filterDoseNumber);
+
+        Button resetFilters = new Button("Réinitialiser les filtres", e -> {
+            filterVaccineName.clear();
+            filterAdministeredDate.clear();
+            filterDoseNumber.clear();
+
+            applyFilters.click();
+        });
+
+        HorizontalLayout filtersLayout = new HorizontalLayout(filterVaccineName, filterAdministeredDate, filterDoseNumber, applyFilters, resetFilters);
+
+        HorizontalLayout header = buildHeader(title, addVaccineBtn);
+
+        addComponents(header, filtersLayout, vaccineGrid);
+        setExpandRatio(vaccineGrid, 1);
+
+        configureGrid();
+        loadVaccines();
+
+        // must be performed in async manner to not block the main thread
+        UI.getCurrent().access(this::fetchAndDisplayNotifications);
+    }
+
+    private static HorizontalLayout buildHeader(Label title, Button addVaccineBtn) {
+        HorizontalLayout header = new HorizontalLayout(title, addVaccineBtn);
+
+        header.setWidthFull();
+        header.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
+        header.setComponentAlignment(addVaccineBtn, Alignment.MIDDLE_RIGHT);
+        header.setExpandRatio(title, 1);
+
+        return header;
+    }
+
+    private Button buildApplyFiltersButton(TextField filterName, DateField filterDate, TextField filterDose) {
+        return new Button("Appliquer les filtres", e -> {
             SearchVaccineCriteria criteria = SearchVaccineCriteria.builder()
                     .vaccineName(filterName.getValue().isEmpty() ? null : filterName.getValue())
                     .administrationDate(filterDate.getValue())
@@ -100,34 +137,20 @@ public class DashboardView extends VerticalLayout implements View {
 
             loadVaccines(req);
         });
-
-        Button resetFilters = new Button("Réinitialiser les filtres", e -> {
-            filterName.clear();
-            filterDate.clear();
-            filterDose.clear();
-
-            applyFilters.click();
-        });
-
-        HorizontalLayout filtersLayout = new HorizontalLayout(filterName, filterDate, filterDose, applyFilters, resetFilters);
-
-        HorizontalLayout header = new HorizontalLayout(title, addVaccineBtn);
-        header.setWidthFull();
-
-        header.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
-        header.setComponentAlignment(addVaccineBtn, Alignment.MIDDLE_RIGHT);
-        header.setExpandRatio(title, 1);
-
-        addComponents(header, filtersLayout, vaccineGrid);
-        setExpandRatio(vaccineGrid, 1);
-
-        configureGrid();
-        loadVaccines();
-
-        // must be performed in async manner to not block the main thread
-        UI.getCurrent().access(this::fetchAndDisplayNotifications);
     }
 
+    private static DateField buildFilterDate() {
+        DateField filterDate = new DateField();
+
+        filterDate.setDateFormat(RootUI.DATE_FORMAT);
+        filterDate.setPlaceholder("Filtrer par date");
+
+        return filterDate;
+    }
+
+    /**
+     * Notifications are called asyncronously to not block the main thread.
+     */
     private void fetchAndDisplayNotifications() {
         UI current = UI.getCurrent();
 
@@ -153,7 +176,6 @@ public class DashboardView extends VerticalLayout implements View {
                         message.append("- ").append(String.format("Dose %s du vaccin %s avant %s", notification.getDoseNumber(), notification.getVaccineName(), notification.getDeadline())).append("\n");
                     }
 
-                    // Update UI in the UI thread
                     current.access(() ->
                             Notification.show("Notifications de vaccins", message.toString(), Notification.Type.TRAY_NOTIFICATION)
                     );
@@ -168,20 +190,12 @@ public class DashboardView extends VerticalLayout implements View {
     }
 
     private void configureGrid() {
-
-        vaccineGrid.setSizeFull();
         String vaccineNameColumn = "vaccineName";
         String administrationDateColumn = "administrationDate";
         String doseNumberColumn = "doseNumber";
         String commentColumn = "comment";
 
         vaccineGrid.setColumns(vaccineNameColumn, administrationDateColumn, doseNumberColumn, commentColumn);
-
-        HashMap<String, VaccineSortableField> dictionary = new HashMap<>();
-        dictionary.put(vaccineNameColumn, VaccineSortableField.VACCINE_NAME);
-        dictionary.put(administrationDateColumn, VaccineSortableField.ADMINISTRATION_DATE);
-        dictionary.put(doseNumberColumn, VaccineSortableField.DOSE_NUMBER);
-        dictionary.put(commentColumn, VaccineSortableField.COMMENT);
 
         vaccineGrid.getColumn(vaccineNameColumn).setCaption("Nom du vaccin");
         vaccineGrid.getColumn(administrationDateColumn).setCaption("Date d'administration");
@@ -191,7 +205,19 @@ public class DashboardView extends VerticalLayout implements View {
         vaccineGrid.setColumnReorderingAllowed(true);
         vaccineGrid.setSelectionMode(Grid.SelectionMode.NONE);
 
+        vaccineGrid.setSizeFull();
+
+        HashMap<String, VaccineSortableField> dictionary = new HashMap<>();
+        dictionary.put(vaccineNameColumn, VaccineSortableField.VACCINE_NAME);
+        dictionary.put(administrationDateColumn, VaccineSortableField.ADMINISTRATION_DATE);
+        dictionary.put(doseNumberColumn, VaccineSortableField.DOSE_NUMBER);
+        dictionary.put(commentColumn, VaccineSortableField.COMMENT);
+
         // Add sorting listener
+        addSortListenerOnVaccineGrid(dictionary);
+    }
+
+    private void addSortListenerOnVaccineGrid(HashMap<String, VaccineSortableField> dictionary) {
         vaccineGrid.addSortListener(event -> {
             if (!event.getSortOrder().isEmpty()) {
                 GridSortOrder<AdministeredVaccineResponse> order = event.getSortOrder().get(0);
@@ -235,7 +261,6 @@ public class DashboardView extends VerticalLayout implements View {
                     .body(request)
                     .returnType(AdministeredVaccineResponseWrapper.class)
                     .build());
-
             // TODO: handle error.
 
             vaccineGrid.setDataProvider(new ListDataProvider<>(response.getData().getContent()));
@@ -251,30 +276,26 @@ public class DashboardView extends VerticalLayout implements View {
 
         FormLayout form = new FormLayout();
 
-        ComboBox<String> vaccineName = new ComboBox<>("Nom vaccin");
-        vaccineName.setWidthFull();
-        vaccineName.setEmptySelectionAllowed(false);  // force user to select
+        ComboBox<String> vaccineNameSelector = buildVaccineNameSelector();
 
-        try {
-            HttpClientHelper.HttpResponse<VaccineTypeResponseWrapper> response = httpClientHelper.get(HttpClientHelper.GetRequest.<VaccineTypeResponseWrapper>builder()
-                    .endpoint(String.format("%s/types", VaccineController.URI))
-                    .returnType(VaccineTypeResponseWrapper.class)
-                    .build());
-            vaccineName.setItems(response.getData().getContent());
-        } catch (Exception e) {
-            Notification.show("Failed to load vaccine names: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
-        }
-
-
-        DateField adminDate = new DateField("Date d'administration");
-        adminDate.setRangeEnd(LocalDate.now());
-        adminDate.setDateFormat("dd/MM/yyyy");
-        adminDate.setWidthFull();
+        DateField adminDate = buildAdministeredDateField();
 
         TextField doseNumber = new TextField("Numéro de la dose");
-        doseNumber.setWidthFull();
+
         TextField comment = new TextField("Commentaire");
-        comment.setWidthFull();
+
+        Stream.of(
+                vaccineNameSelector,
+                adminDate,
+                doseNumber,
+                comment
+        ).forEach(component -> {
+            component.setWidthFull();
+
+            if (component != comment) {
+                ((HasValue) component).setRequiredIndicatorVisible(true);
+            }
+        });
 
         Button submit = new Button("Sauver");
         submit.addStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -289,7 +310,7 @@ public class DashboardView extends VerticalLayout implements View {
                                 .administrationDate(adminDate.getValue())
                                 .doseNumber(Integer.parseInt(doseNumber.getValue()))
                                 .comment(comment.getValue())
-                                .vaccineName(vaccineName.getValue())
+                                .vaccineName(vaccineNameSelector.getValue())
                                 .build())
                         .returnType(Integer.class)
                         .build());
@@ -297,16 +318,53 @@ public class DashboardView extends VerticalLayout implements View {
 
                 Notification.show("Vaccin ajouté avec succès", Notification.Type.TRAY_NOTIFICATION);
                 modal.close();
+
+                // once a new vaccine was added, simply call the backend again.
                 loadVaccines();
             } catch (Exception ex) {
                 Notification.show("Le vaccin n'a pas pu être enregistré: " + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
             }
         });
 
-        form.addComponents(vaccineName, adminDate, doseNumber, comment, submit);
+        form.addComponents(vaccineNameSelector, adminDate, doseNumber, comment, submit);
 
         modal.setContent(form);
         UI.getCurrent().addWindow(modal);
+    }
+
+    private static DateField buildAdministeredDateField() {
+        DateField adminDate = new DateField("Date d'administration");
+        adminDate.setRangeEnd(LocalDate.now());
+        adminDate.setDateFormat(RootUI.DATE_FORMAT);
+        adminDate.setWidthFull();
+        return adminDate;
+    }
+
+    private ComboBox<String> buildVaccineNameSelector() {
+        ComboBox<String> vaccineName = new ComboBox<>("Nom vaccin");
+
+        vaccineName.setEmptySelectionAllowed(false);  // force user to select
+
+        fillVaccineNamesOn(vaccineName);
+
+        return vaccineName;
+    }
+
+    /**
+     * Call is done to backend to fetch Vaccine names: could be done async.
+     *
+     * @param vaccineName combox to set values in.
+     */
+    private void fillVaccineNamesOn(ComboBox<String> vaccineName) {
+        try {
+            HttpClientHelper.HttpResponse<VaccineTypeResponseWrapper> response = httpClientHelper.get(HttpClientHelper.GetRequest.<VaccineTypeResponseWrapper>builder()
+                    .endpoint(String.format("%s/types", VaccineController.URI))
+                    .returnType(VaccineTypeResponseWrapper.class)
+                    .build());
+            vaccineName.setItems(response.getData().getContent());
+        } catch (Exception e) {
+            Notification.show("Failed to load vaccine names: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
+        }
     }
 
     @Override

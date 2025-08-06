@@ -105,7 +105,8 @@ public class AdministeredVaccineService {
                 .orElse(DEFAULT_SORT);
 
 
-        return administeredVaccineRepository.findAll(spec, Sort.by(sortRequest.getSecond(), sortRequest.getFirst().toArray(new String[0]))).stream()
+        return administeredVaccineRepository.findAll(spec,
+                        Sort.by(sortRequest.getSecond(), sortRequest.getFirst().toArray(new String[0]))).stream()
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
 

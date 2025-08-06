@@ -25,7 +25,7 @@ public class JwtValidationFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-        log.debug("JwtValidationFilter init: [{}]", filterConfig);
+        // nothing to do
     }
 
     @Override
@@ -55,6 +55,6 @@ public class JwtValidationFilter implements Filter {
 
     @Override
     public void destroy() {
-        log.debug("JwtValidationFilter was destroyed");
+        // nothing to Do
     }
 }

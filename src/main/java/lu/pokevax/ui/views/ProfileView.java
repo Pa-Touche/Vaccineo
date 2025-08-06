@@ -48,76 +48,9 @@ public class ProfileView extends VerticalLayout implements View {
                     .returnType(UserResponse.class)
                     .build());
 
-            UserResponse user = response.getData();
+            setUserDataIntoFormLabels(response.getData(), form);
 
-            Label lastName = new Label(user.getName());
-            lastName.setCaption("Nom de famille");
-            form.addComponent(lastName);
-
-            Label surname = new Label(user.getSurname());
-            surname.setCaption("Prénom");
-            form.addComponent(surname);
-
-            Label birthDate = new Label(user.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-            birthDate.setCaption("Date de naissance");
-            form.addComponent(birthDate);
-
-            Label email = new Label(user.getEmail());
-            email.setCaption("Email");
-            form.addComponent(email);
-
-            form.addComponents(lastName, surname, birthDate, email);
-
-            deleteBtn = new Button("Supprimer mon compte", evt -> {
-                try {
-
-                    Window confirmDialog = new Window("Confirmation");
-                    confirmDialog.setModal(true);
-                    confirmDialog.setClosable(false);
-                    confirmDialog.setResizable(false);
-                    confirmDialog.setWidth("400px");
-
-                    VerticalLayout dialogLayout = new VerticalLayout();
-                    dialogLayout.setMargin(true);
-                    dialogLayout.setSpacing(true);
-
-                    Label message = new Label("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irrévocable.");
-                    message.setWidth("100%");
-
-                    Button confirmBtn = new Button("Oui, supprimer");
-                    confirmBtn.addStyleName(ValoTheme.BUTTON_DANGER);
-
-                    Button cancelBtn = new Button("Annuler");
-                    cancelBtn.addStyleName(ValoTheme.BUTTON_PRIMARY);
-
-                    HorizontalLayout buttons = new HorizontalLayout(confirmBtn, cancelBtn);
-                    buttons.setSpacing(true);
-
-                    confirmBtn.addClickListener(event -> {
-                        try {
-                            httpClientHelper.delete(UserController.URI + String.format("/%s", user.getId()));
-                            Notification.show("Compte supprimé", Notification.Type.WARNING_MESSAGE);
-                            confirmDialog.close();
-                            UI.getCurrent().getNavigator().navigateTo(LoginSignupView.VIEW_PATH);
-
-                        } catch (Exception e) {
-                            Notification.show("Échec de la suppression: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
-                            confirmDialog.close();
-                        }
-                    });
-
-                    cancelBtn.addClickListener(event -> confirmDialog.close());
-
-                    dialogLayout.addComponents(message, buttons);
-                    confirmDialog.setContent(dialogLayout);
-
-                    UI.getCurrent().addWindow(confirmDialog);
-
-                } catch (Exception e) {
-                    Notification.show("Échec de la suppression: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
-                }
-            });
-            deleteBtn.addStyleName(ValoTheme.BUTTON_DANGER);
+            deleteBtn = buildDeleteUserBtn(response.getData());
         } catch (Exception e) {
             Notification.show("Erreur lors du chargement du profil: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
         }
@@ -131,7 +64,102 @@ public class ProfileView extends VerticalLayout implements View {
         addComponent(header);
 
         addComponent(form);
+    }
 
+    private static void setUserDataIntoFormLabels(UserResponse user, FormLayout form) {
+        Label lastName = new Label(user.getName());
+        lastName.setCaption("Nom de famille");
+        form.addComponent(lastName);
+
+        Label surname = new Label(user.getSurname());
+        surname.setCaption("Prénom");
+        form.addComponent(surname);
+
+        Label birthDate = new Label(user.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        birthDate.setCaption("Date de naissance");
+        form.addComponent(birthDate);
+
+        Label email = new Label(user.getEmail());
+        email.setCaption("Email");
+        form.addComponent(email);
+
+        form.addComponents(lastName, surname, birthDate, email);
+    }
+
+    private Button buildDeleteUserBtn(UserResponse user) {
+        Button deleteBtn;
+        deleteBtn = new Button("Supprimer mon compte", evt -> {
+            try {
+
+                Window confirmDialog = buildConfirmationDialog();
+
+                VerticalLayout dialogLayout = buildVerticalLayout();
+
+                Label message = new Label("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irrévocable.");
+                message.setWidth("100%");
+
+                Button userDeletionBtn = buildConfirmUserDeletionBtn(user, confirmDialog);
+
+                Button buildCancelDeletionBtn = buildCancelDeletionBtn(confirmDialog);
+
+                HorizontalLayout buttons = new HorizontalLayout(userDeletionBtn, buildCancelDeletionBtn);
+                buttons.setSpacing(true);
+
+                dialogLayout.addComponents(message, buttons);
+                confirmDialog.setContent(dialogLayout);
+
+                UI.getCurrent().addWindow(confirmDialog);
+
+            } catch (Exception e) {
+                Notification.show("Échec de la suppression: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            }
+        });
+
+        deleteBtn.addStyleName(ValoTheme.BUTTON_DANGER);
+
+        return deleteBtn;
+    }
+
+    private static Button buildCancelDeletionBtn(Window confirmDialog) {
+        Button cancelBtn = new Button("Annuler");
+        cancelBtn.addStyleName(ValoTheme.BUTTON_PRIMARY);
+        cancelBtn.addClickListener(event -> confirmDialog.close());
+        return cancelBtn;
+    }
+
+    private Button buildConfirmUserDeletionBtn(UserResponse user, Window confirmDialog) {
+        Button confirmBtn = new Button("Oui, supprimer");
+        confirmBtn.addStyleName(ValoTheme.BUTTON_DANGER);
+
+        confirmBtn.addClickListener(event -> {
+            try {
+                httpClientHelper.delete(UserController.URI + String.format("/%s", user.getId()));
+                Notification.show("Compte supprimé", Notification.Type.WARNING_MESSAGE);
+                confirmDialog.close();
+                UI.getCurrent().getNavigator().navigateTo(LoginSignupView.VIEW_PATH);
+
+            } catch (Exception e) {
+                Notification.show("Échec de la suppression: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
+                confirmDialog.close();
+            }
+        });
+        return confirmBtn;
+    }
+
+    private static VerticalLayout buildVerticalLayout() {
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setMargin(true);
+        dialogLayout.setSpacing(true);
+        return dialogLayout;
+    }
+
+    private static Window buildConfirmationDialog() {
+        Window confirmDialog = new Window("Confirmation");
+        confirmDialog.setModal(true);
+        confirmDialog.setClosable(false);
+        confirmDialog.setResizable(false);
+        confirmDialog.setWidth("400px");
+        return confirmDialog;
     }
 
     @Override
