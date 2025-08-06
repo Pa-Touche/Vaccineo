@@ -42,9 +42,11 @@ import lu.vaccineo.business.vaccine.administered.responses.AdministeredVaccineRe
 import lu.vaccineo.business.vaccine.administered.responses.VaccineTypeResponseWrapper;
 import lu.vaccineo.ui.RootUI;
 import lu.vaccineo.ui.components.ComponentsFactory;
+import lu.vaccineo.ui.helpers.ErrorNotificationUtils;
 import lu.vaccineo.ui.helpers.HttpClientHelper;
 import lu.vaccineo.ui.helpers.SessionWrapper;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 
@@ -53,7 +55,9 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SpringView(name = DashboardView.VIEW_PATH)
@@ -383,8 +387,16 @@ public class DashboardView extends VerticalLayout implements View {
 
         submit.addClickListener(event -> {
             try {
+                if (Stream.of(
+                                adminDate,
+                                doseNumber
+                        )
+                        .anyMatch(HasValue::isEmpty)) {
+                    Notification.show("Les champs marqués d'une étoile sont obligatoires", Notification.Type.WARNING_MESSAGE);
+                    return;
+                }
 
-                httpClientHelper.post(HttpClientHelper.PostRequest.<CreateAdministeredVaccineRequest, Integer>builder()
+                HttpClientHelper.HttpResponse<Integer> response = httpClientHelper.post(HttpClientHelper.PostRequest.<CreateAdministeredVaccineRequest, Integer>builder()
                         .endpoint(VaccineController.URI)
                         .body(CreateAdministeredVaccineRequest.builder()
                                 .administrationDate(adminDate.getValue())
@@ -395,6 +407,16 @@ public class DashboardView extends VerticalLayout implements View {
                         .returnType(Integer.class)
                         .build());
 
+                if (response.hasError()) {
+                    Map<String, String> validationError = response.getValidationError();
+                    if (MapUtils.isNotEmpty(validationError)) {
+                        Notification.show("Le vaccin n'a pas pu être créer car la validation de vos données à échoué, voici le résultat de la validation:\n" + ErrorNotificationUtils.buildReadableValidationError(validationError), Notification.Type.ERROR_MESSAGE);
+                    } else {
+                        Notification.show(response.getErrorMessage(), Notification.Type.ERROR_MESSAGE);
+                    }
+
+                    return;
+                }
 
                 Notification.show("Vaccin ajouté avec succès", Notification.Type.TRAY_NOTIFICATION);
                 modal.close();
@@ -411,6 +433,8 @@ public class DashboardView extends VerticalLayout implements View {
         modal.setContent(form);
         UI.getCurrent().addWindow(modal);
     }
+
+
 
     private static DateField buildAdministeredDateField() {
         DateField adminDate = new DateField("Date d'administration");

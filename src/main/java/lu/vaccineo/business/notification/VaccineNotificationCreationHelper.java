@@ -25,6 +25,7 @@ public class VaccineNotificationCreationHelper {
     public void createVaccineNotifications(UserEntity user) {
         // this is generally unsafe.
         LocalDate now = LocalDate.now();
+        // TODO: done in multiple SQL statements
         vaccineNotificationRepository.saveAll(vaccineScheduleRepository.findAll().stream()
                 .map(scheduleEntity -> VaccineNotificationEntity.builder()
                         .user(user)

@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidVaccineName {
-    String message() default "Vaccine name is not known in the system";
+    String message() default "Le nom du vaccin n'est pas connu du système";
 
     Class<?>[] groups() default {};
 

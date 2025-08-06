@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Optional;
 
 // TODO: contains too much duplication
@@ -31,6 +33,7 @@ import java.util.Optional;
 @Slf4j
 public class HttpClientHelper {
 
+    public static final String DEFAULT_ERROR_MSG = "Une erreur inatendu est survenue";
     private final ObjectMapper objectMapper;
     private final SessionWrapper sessionWrapper;
 
@@ -63,8 +66,20 @@ public class HttpClientHelper {
                 }
             } else {
                 log.error("Backend responded with error: [{}]", code);
+
+                if (code == 400) {
+                    return HttpResponse.<R>builder()
+                            .validationError(objectMapper.readValue(IOUtils.toString(conn.getErrorStream(), StandardCharsets.UTF_8), Map.class))
+                            .build();
+                } else if (code == 401) {
+                    return HttpResponse.<R>builder()
+                            .errorMessage(IOUtils.toString(conn.getErrorStream(), StandardCharsets.UTF_8))
+                            .build();
+                }
+
                 return HttpResponse.<R>builder()
-                        .errorMessage("It seems that the server could not process your request." + "\n" + IOUtils.toString(conn.getErrorStream(), StandardCharsets.UTF_8))
+                        .technicalError(IOUtils.toString(conn.getErrorStream(), StandardCharsets.UTF_8))
+                        .errorMessage(DEFAULT_ERROR_MSG)
                         .build();
             }
 
@@ -72,7 +87,8 @@ public class HttpClientHelper {
         } catch (Exception e) {
             log.error("JSON POST failed", e);
             return HttpResponse.<R>builder()
-                    .errorMessage("An unexpected error occured, sorry for the inconvenience")
+                    .technicalError(e.getMessage())
+                    .errorMessage(DEFAULT_ERROR_MSG)
                     .build();
         }
     }
@@ -121,7 +137,8 @@ public class HttpClientHelper {
             } else {
                 log.error("Backend responded with error: [{}]", code);
                 return HttpResponse.<R>builder()
-                        .errorMessage("It seems that the server could not process your request." + "\n" + IOUtils.toString(conn.getErrorStream(), StandardCharsets.UTF_8))
+                        .errorMessage(DEFAULT_ERROR_MSG)
+                        .technicalError(IOUtils.toString(conn.getErrorStream(), StandardCharsets.UTF_8))
                         .build();
             }
 
@@ -129,18 +146,19 @@ public class HttpClientHelper {
         } catch (Exception e) {
             log.error("JSON POST failed", e);
             return HttpResponse.<R>builder()
-                    .errorMessage("An unexpected error occured, sorry for the inconvenience")
+                    .errorMessage(DEFAULT_ERROR_MSG)
+                    .technicalError(e.getMessage())
                     .build();
         }
     }
 
-    public void delete(String endpoint) {
-        delete(DeleteRequest.builder()
+    public HttpResponse<Void> delete(String endpoint) {
+        return delete(DeleteRequest.builder()
                 .endpoint(endpoint)
                 .build());
     }
 
-    public <T> void delete(DeleteRequest<T> request) {
+    public <T> HttpResponse<Void> delete(DeleteRequest<T> request) {
         try {
             URL url = new URL(getBaseUrl() + request.getEndpoint());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -166,13 +184,23 @@ public class HttpClientHelper {
 
             if (code >= 200 && code < 300) {
                 log.info("Success");
+                return HttpResponse.<Void>builder()
+                        .build();
             } else {
                 log.error("Backend responded with error: [{}]", code);
+                return HttpResponse.<Void>builder()
+                        .errorMessage(DEFAULT_ERROR_MSG)
+                        .technicalError(IOUtils.toString(conn.getErrorStream(), StandardCharsets.UTF_8))
+                        .build();
             }
 
 
         } catch (Exception e) {
             log.error("JSON POST failed", e);
+            return HttpResponse.<Void>builder()
+                    .errorMessage(DEFAULT_ERROR_MSG)
+                    .technicalError(e.getMessage())
+                    .build();
         }
     }
 
@@ -222,10 +250,18 @@ public class HttpClientHelper {
         private R data;
 
         @Nullable
+        private Map<String, String> validationError;
+
+        @Nullable
         private String errorMessage;
 
+        @Nullable
+        private String technicalError;
+
         public boolean hasError() {
-            return StringUtils.isNoneEmpty(errorMessage);
+            return StringUtils.isNotEmpty(errorMessage)
+                    || MapUtils.isNotEmpty(validationError)
+                    || StringUtils.isNotEmpty(technicalError);
         }
     }
 }

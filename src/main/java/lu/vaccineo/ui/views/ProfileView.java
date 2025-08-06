@@ -133,7 +133,12 @@ public class ProfileView extends VerticalLayout implements View {
 
         confirmBtn.addClickListener(event -> {
             try {
-                httpClientHelper.delete(UserController.URI + String.format("/%s", user.getId()));
+                HttpClientHelper.HttpResponse<Void> response = httpClientHelper.delete(UserController.URI + String.format("/%s", user.getId()));
+
+                if (response.hasError()) {
+                    Notification.show("Échec de la suppression");
+                }
+
                 Notification.show("Compte supprimé", Notification.Type.WARNING_MESSAGE);
                 confirmDialog.close();
                 UI.getCurrent().getNavigator().navigateTo(LoginSignupView.VIEW_PATH);

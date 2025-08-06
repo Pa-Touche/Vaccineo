@@ -14,13 +14,17 @@ import lu.vaccineo.business.user.login.LoginRequest;
 import lu.vaccineo.business.user.login.LoginResponse;
 import lu.vaccineo.business.user.requests.CreateUserRequest;
 import lu.vaccineo.ui.RootUI;
+import lu.vaccineo.ui.helpers.ErrorNotificationUtils;
 import lu.vaccineo.ui.helpers.HttpClientHelper;
 import lu.vaccineo.ui.helpers.SessionWrapper;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SpringView(name = LoginSignupView.VIEW_PATH)
@@ -102,7 +106,14 @@ public class LoginSignupView extends VerticalLayout implements View {
                 .build());
 
         if (response.hasError()) {
-            Notification.show(response.getErrorMessage(), Notification.Type.ERROR_MESSAGE);
+
+            Map<String, String> validationError = response.getValidationError();
+            if (MapUtils.isNotEmpty(validationError)) {
+                Notification.show("Certains champs ont été mal renseigné et ne respecte pas le format demandé, voici le résultat de la validation:\n" + ErrorNotificationUtils.buildReadableValidationError(validationError), Notification.Type.ERROR_MESSAGE);
+            } else {
+                Notification.show(response.getErrorMessage(), Notification.Type.ERROR_MESSAGE);
+            }
+
             return;
         }
 
@@ -163,7 +174,13 @@ public class LoginSignupView extends VerticalLayout implements View {
                         .build());
 
                 if (response.hasError()) {
-                    Notification.show("Le compte n'as pas pu être créer: " + response.getErrorMessage(), Notification.Type.ERROR_MESSAGE);
+                    Map<String, String> validationError = response.getValidationError();
+                    if (MapUtils.isNotEmpty(validationError)) {
+                        Notification.show("Le compte n'a pas pu être créer car la validation de vos données à échoué, voici le résultat de la validation:\n" + ErrorNotificationUtils.buildReadableValidationError(validationError), Notification.Type.ERROR_MESSAGE);
+                    } else {
+                        Notification.show(response.getErrorMessage(), Notification.Type.ERROR_MESSAGE);
+                    }
+
                     return;
                 }
 

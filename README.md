@@ -22,8 +22,15 @@ Once the application started you can verify it's behaving correctly by executing
 
 ## Known errors
 
-- The reload on the dashboard (browser refresh: F5 / ctrl + r) the path is not properly loaded
-- Enter keyboard press fails in signup
+- Reloading the dashboard once connected fails but it's okay if you switch back and forth to the profile page.
+- Enter keyboard press fails in signup (but works on other places)
+
+## Type of tests
+
+- **Unit tests**
+- **Whitebox tests**: to check that all "attached" entities where properly deleted
+- **Spring Boot Tests**: allows to execute tests that load the Spring Boot contexts, not an integration test but for
+  this application provides very similar safety.
 
 ## Requirements
 
@@ -45,15 +52,10 @@ Once the application started you can verify it's behaving correctly by executing
 
 ## Enhancements
 
-To keep things simple some shortcuts were made, some of those with explanation are listed here
-
 ### Functional
 
-- Range for notifications: buffer like approach: 10 days/months buffer after per example
-- Cronjob for notifications ?
-  - On connection
-  - Everynight
-- GDPR full download endpoint
+- Range for notifications: example 10 days before / after deadline
+- GDPR full download endpoint: download every data present in DB and create a single JSON
 - Handle security token expiration:
   - User must connect again ?
   - Auto-refresh if still 'using' the system ?
@@ -70,7 +72,6 @@ To keep things simple some shortcuts were made, some of those with explanation a
   projections.
 - `@Enumerated(EnumType.STRING)` is more easily readable in DB but takes more space
 - Exposing technical IDs: incremented numbers allow clients to gain knowledge about usage: Privacy and Securicy
-- Indexes: to check: foreign keys should have indexes, maybe also search/sort columns to avoid full table scans.
 - HTTPS
 - Add ArchUnit tests for:
   - Entities:
@@ -162,13 +163,6 @@ A possible implementation that handles real intervals: [3-6] months per example:
 - Add notifcation active date within `lu.vaccineo.business.notification.VaccineNotificationEntity` so that the
   notifications element are only returned between both dates.
   notificationActivationDate >= today =< notificationExpirationDate.
-
-### Type of tests
-
-- **Unit tests**
-- **Whitebox tests**: to check that all "attached" entities where properly deleted
-- **Spring Boot Tests**: allows to execute tests that load the Spring Boot contexts, not an integration test but for
-  this application provides very similar safety.
 
 
 ## Useful links

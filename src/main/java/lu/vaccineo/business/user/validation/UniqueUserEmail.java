@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueUserEmail {
-    String message() default "Email address is already in use";
+    String message() default "Cette addresse mail est déjà utilisé";
 
     Class<?>[] groups() default {};
 
