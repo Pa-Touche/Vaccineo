@@ -1,6 +1,6 @@
-# Pokévax
+# Vaccinéo
 
-Pokévax is a Java (8) Spring Boot 2.7.18 web application that handle users and their vaccine schedule.
+Vaccinéo is a Java (8) Spring Boot 2.7.18 web application that handle users and their vaccine schedule.
 
 This project is not meant to be used as-is in PROD, mostly due to security issues.
 
@@ -35,25 +35,52 @@ mvn spring-boot:run -Dspring-boot.run.profiles=local
 
 - Java 8
 - Vaadin 8
+- Hibernate
 
-## Glossary
+## Enhancements
 
-- (T) => not done / TODO
-- (D) => done
-- (I) => ignored
+To keep things simple some shortcuts were made, some of those with explanation are listed here
+
+### Functional
+
+- Range for notifications: buffer like approach: 10 days/months buffer after per example
+- Cronjob for notifications ?
+  - On connection
+  - Everynight
+- GDPR full download endpoint
+- Handle security token expiration:
+  - User must connect again ?
+  - Auto-refresh if still 'using' the system ?
+
+### Technical
+
+- Do not use `@GeneratedValue(strategy = GenerationType.IDENTITY)` within JPA entities as Hibernate cannot batch
+  inserts without round-trip to DBs (best to use one/mulitple common sequences so that Hibernate can batch those: i.e. '
+  load' 50+ ids at once)
+- **Use** Spring-Security instead of doing it manually. Here was done for learning / exercise reasons
+  - bearer token / checking mechanism from Spring-Security
+  - Password encryption: do not rely on 'self-made' solutions
+- `@OneToOne(fetch = FetchType.LAZY)`: do not rely on eager strategy and favor more flexible solutions: entityGraph /
+  projections.
+- `@Enumerated(EnumType.STRING)` is more easily readable in DB but takes more space
+- Exposing technical IDs: incremented numbers allow clients to gain knowledge about usage: Privacy and Securicy
+- Indexes: to check: foreign keys should have indexes, maybe also search/sort columns to avoid full table scans.
+- HTTPS
+- Add ArchUnit tests for:
+  - Entities:
+    - Checking if index on foreign key
+    - Inheriting BaseClass
+    - Follows naming conventions
+- Logging: Create AOP annotation to enable default logging.
+- I18N: internationalization
 
 ## TO-DOs
 
-- Vaadin:
-  - Refactoring to avoid too much duplication
 - Error messages:
   - ConstraintViolation handling: show above form in frontend ?
   - notifications
   - Exception: show message ?
 - Check for invalid vaccine name / dosis number
-- Create common config for mapstruct
-- Spellcheck documentation
-- Go over package structure / naming
 
 ## Features description 
 
@@ -122,19 +149,14 @@ This can avoid the scenario where the batch simply takes too long to execute and
   - User account deletion (this might not be that infrequent!)
 
 #### Known limits
+
 Notifications were implemented in a simplified manner and **DO NOT** take lower ranges into account but only as a Deadline mechanism.
 A possible implementation that handles real intervals: [3-6] months per example:  
-- Add lower range into `lu.pokevax.business.vaccine.VaccineScheduleEntity` (current only upper *deadline**)
-- Add notifcation active date within `lu.pokevax.business.notification.VaccineNotificationEntity` so that the
+
+- Add lower range into `lu.vaccineo.business.vaccine.VaccineScheduleEntity` (current only upper *deadline**)
+- Add notifcation active date within `lu.vaccineo.business.notification.VaccineNotificationEntity` so that the
   notifications element are only returned between both dates.
   notificationActivationDate >= today =< notificationExpirationDate.
-
-## Testing
-
-This projects relies on much auto-generated code, so that many copy-paste errors are avoided:
-
-- lombok: getter/setter/equals & Hashcode etc.
-- mapstruct: generating POJO mapping code
 
 ### Type of tests
 
@@ -143,47 +165,6 @@ This projects relies on much auto-generated code, so that many copy-paste errors
 - **Spring Boot Tests**: allows to execute tests that load the Spring Boot contexts, not an integration test but for
   this application provides very similar safety.
 
-## Enhancements
-
-To keep things simple some shortcuts were made, some of those with explanation are listed here:
-
-### Technical
-
-- Do not use `@GeneratedValue(strategy = GenerationType.IDENTITY)` within JPA entities as Hibernate cannot batch 
-inserts without round-trip to DBs (best to use one/mulitple common sequences so that Hibernate can batch those: i.e. 'load' 50+ ids at once)
-- **Use** Spring-Security instead of doing it manually. Here was done for learning / exercise reasons  
-  - bearer token / checking mechanism from Spring-Security
-  - Password encryption: do not rely on 'self-made' solutions
-- `@OneToOne(fetch = FetchType.LAZY)`: do not rely on eager strategy and favor more flexible solutions: entityGraph /
-  projections.
-- `@Enumerated(EnumType.STRING)` is more easily readable in DB but takes more space
-- Exposing technical IDs: incremented numbers allow clients to gain knowledge about usage: Privacy and Securicy
-- Indexes: to check: foreign keys should have indexes, maybe also search/sort columns to avoid full table scans.
-
-### Features
-
-- **Also** technical: i18n: reused wording from exercise.
-
-## Ideas
-
-- Range for notifications: buffer like approach: 10 days/months buffer after per example
-- Cronjob for notifications ? 
-  - On connection
-  - Everynight 
-- Encrypt data: using full encryption or simply for some columns: using 
-- Stacktrace
-- GDPR full download endpoint
-- HTTPS
-- Add ArchUnit tests for:
-  - Entities:
-    - Checking if index on foreign key
-    - Inheriting BaseClass
-    - Follows naming conventions
-- Logging: Create AOP annotation to enable default logging.
-- I18N: internationalization
-- Handle security token expiration:
-    - User must connect again ?
-    - Auto-refresh if still 'using' the system ?
 
 ## Useful links
 

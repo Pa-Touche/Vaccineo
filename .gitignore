@@ -14,7 +14,9 @@ deps.txt
 notebook.csv
 
 data/sqlite-database.db
-data/spring-test-sqlite-database.db
+
+# Ideally, should not be in git, but for simplicity + low volue kept in Git
+#data/spring-test-sqlite-database.db
 
 ### STS ###
 .apt_generated

@@ -8,10 +8,10 @@
         <version>2.7.18</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>lu.pokevax</groupId>
-    <artifactId>pokevax</artifactId>
+    <groupId>lu.vaccineo</groupId>
+    <artifactId>vaccineo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>pokevax</name>
+    <name>vaccineo</name>
     <description>Pokevax: Spring Boot / Vaadin application to handle user&apos;s vaccines</description>
     <properties>
         <java.version>8</java.version>
