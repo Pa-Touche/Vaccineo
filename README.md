@@ -4,18 +4,32 @@ Pokévax is a Java (8) Spring Boot 2.7.18 web application that handle users and 
 
 This project is not meant to be used as-is in PROD, mostly due to security issues.
 
+## Get started
+
+If you are an IntelliJ user you can use the "local" run configuration: in `./run`.
+
+Otherwise you can use:
+
+```
+mvn spring-boot:run -Dspring-boot.run.profiles=local
+```
+
+## Known errors
+
+- The reload on the dashboard (browser refresh: F5 / ctrl + r) the path is not properly loaded
+- Enter keyboard press fails in signup
+
 ## Requirements
 
 ### Business
 
 - Notifications
-  - Persisted in DB ?
-  - Cronjob ?
-  - On connection ?
-- Login screen: (without auth so far)
+- Login & signup screens: (without auth so far)
   - Login already account
   - Create account
-- Delete account
+- Delete account with confirmation modal
+- Search vaccine screen
+- Add administered vaccine
 
 ### Technical
 
@@ -30,8 +44,6 @@ This project is not meant to be used as-is in PROD, mostly due to security issue
 
 ## TO-DOs
 
-- UX:
-  - Enter button handling for forms
 - Vaadin:
   - Refactoring to avoid too much duplication
 - Error messages:
@@ -124,6 +136,13 @@ This projects relies on much auto-generated code, so that many copy-paste errors
 - lombok: getter/setter/equals & Hashcode etc.
 - mapstruct: generating POJO mapping code
 
+### Type of tests
+
+- **Unit tests**
+- **Whitebox tests**: to check that all "attached" entities where properly deleted
+- **Spring Boot Tests**: allows to execute tests that load the Spring Boot contexts, not an integration test but for
+  this application provides very similar safety.
+
 ## Enhancements
 
 To keep things simple some shortcuts were made, some of those with explanation are listed here:
@@ -139,40 +158,11 @@ inserts without round-trip to DBs (best to use one/mulitple common sequences so 
   projections.
 - `@Enumerated(EnumType.STRING)` is more easily readable in DB but takes more space
 - Exposing technical IDs: incremented numbers allow clients to gain knowledge about usage: Privacy and Securicy
-- Indexes: index where only set on foreign keys, as those are used to perform joins.
+- Indexes: to check: foreign keys should have indexes, maybe also search/sort columns to avoid full table scans.
 
 ### Features
 
 - **Also** technical: i18n: reused wording from exercise.
-
-## Steps
-
-- Screens and related features to implement: 
-  - (T) Login
-  - (T) Create account
-    - (T) Name
-    - (T) Surname
-    - (T) Email-address
-    - (T) Date of birth
-  - (T) List of vaccines of the current user
-    - (T) Add vaccine
-    - (T) Data-table: Vaccine type, 
-    - (T) Filtering / sorting 
-  - (T) My profile
-    - (T) Name
-    - (T) Surname
-    - (T) Email-address
-    - (T) Date of birth
-    - (T) BUTTON: delete account with confirmation
-- (D) Analyse data
-  - What format
-  - What column this could give
-- (D) Draft screens on paper
-- (T) Have a look at What Vaadin 8 provides
-- (D) Draft DB structure 
-- (D) Draft high level *business* modules
-- (I) Draft Internationalization
-
 
 ## Ideas
 

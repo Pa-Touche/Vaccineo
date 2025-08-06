@@ -81,6 +81,7 @@ public class DashboardView extends VerticalLayout implements View {
         filterName.setPlaceholder("Filtrer par nom");
 
         DateField filterDate = new DateField();
+        filterDate.setDateFormat("dd/MM/yyyy");
         filterDate.setPlaceholder("Filtrer par date");
 
         TextField filterDose = new TextField();
@@ -267,6 +268,7 @@ public class DashboardView extends VerticalLayout implements View {
 
         DateField adminDate = new DateField("Date d'administration");
         adminDate.setRangeEnd(LocalDate.now());
+        adminDate.setDateFormat("dd/MM/yyyy");
         adminDate.setWidthFull();
 
         TextField doseNumber = new TextField("Numéro de la dose");
