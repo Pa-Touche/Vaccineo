@@ -7,4 +7,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 public abstract class BaseUnitTest {
+
+    protected static Integer getRandomInteger() {
+        int min = 1;
+        int max = 1000;
+        return min + (int) (Math.random() * (max - min + 1));
+    }
 }

@@ -20,12 +20,6 @@ public class EntityUtilsTest extends BaseUnitTest {
         assertThat(result).isTrue();
     }
 
-    private static Integer getRandomInteger() {
-        int min = 1;
-        int max = 1000;
-        return min + (int) (Math.random() * (max - min + 1));
-    }
-
     @Test
     void entityEquals_shouldReturnFalse_whenOtherIsNull() {
         // PREPARE
