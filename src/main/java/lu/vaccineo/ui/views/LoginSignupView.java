@@ -51,7 +51,7 @@ public class LoginSignupView extends VerticalLayout implements View {
         VerticalLayout signupTab = buildSignupTab();
 
         tabs.addTab(loginTab, "Login");
-        tabs.addTab(signupTab, "Sign Up");
+        tabs.addTab(signupTab, "Créer un compte");
         tabs.setSelectedTab(loginTab);
 
         addComponent(tabs);

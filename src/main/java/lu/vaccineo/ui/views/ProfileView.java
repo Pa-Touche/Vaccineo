@@ -34,7 +34,7 @@ public class ProfileView extends VerticalLayout implements View {
 
         addComponent(ComponentsFactory.menuBar(ComponentsFactory.MenuEntry.PROFILE));
 
-        Label title = new Label("Mon profil utilisateur");
+        Label title = new Label("Mon profil");
         title.addStyleName(ValoTheme.LABEL_H1);
         title.addStyleName("no-margin-top");
 

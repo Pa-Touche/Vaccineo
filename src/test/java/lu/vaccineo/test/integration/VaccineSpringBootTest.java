@@ -7,6 +7,7 @@ import lu.vaccineo.business.vaccine.administered.requests.SearchVaccineRequest;
 import lu.vaccineo.business.vaccine.administered.requests.SortRequest;
 import lu.vaccineo.business.vaccine.administered.responses.AdministeredVaccineResponse;
 import lu.vaccineo.business.vaccine.administered.responses.AdministeredVaccineResponseWrapper;
+import lu.vaccineo.business.vaccine.administered.responses.VaccineTypeResponseWrapper;
 import lu.vaccineo.test.VaccineName;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -140,6 +141,24 @@ public class VaccineSpringBootTest extends BaseSpringBootTest {
         Assertions.assertThat(actual.getContent())
                 .hasSize(3)
                 .extracting(AdministeredVaccineResponse::getVaccineName)
+                .isSorted();
+    }
+
+    @Test
+    public void fetchVaccineTypes() throws Exception {
+        // PREPARE
+        CreateUserSummary createdUser = createRandomUser();
+
+        // EXECUTE & CHECK
+
+        MvcResult result = mockMvc.perform(buildAuthorizedGetRequest(VACCINE_URI + "/types", createdUser.getUserId()))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        VaccineTypeResponseWrapper actual = readJson(result.getResponse(), VaccineTypeResponseWrapper.class);
+
+        Assertions.assertThat(actual.getContent())
+                .isNotEmpty()
                 .isSorted();
     }
 

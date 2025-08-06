@@ -47,13 +47,4 @@ public class AdministeredVaccineSpecifications {
             return criteriaBuilder.equal(root.get("doseNumber"), doseNumber);
         };
     }
-
-    public static Specification<AdministeredVaccineEntity> hasCommentContaining(String comment) {
-        return (root, query, criteriaBuilder) -> {
-            if (StringUtils.isEmpty(comment)) {
-                return criteriaBuilder.conjunction();
-            }
-            return criteriaBuilder.like(root.get("comment"), "%" + comment + "%");
-        };
-    }
 }
