@@ -57,7 +57,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SpringView(name = DashboardView.VIEW_PATH)
@@ -433,7 +432,6 @@ public class DashboardView extends VerticalLayout implements View {
         modal.setContent(form);
         UI.getCurrent().addWindow(modal);
     }
-
 
 
     private static DateField buildAdministeredDateField() {

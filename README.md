@@ -82,14 +82,6 @@ Once the application started you can verify it's behaving correctly by executing
 - I18N: internationalization
 - JPA model gen to provide type satefy for entities fields.
 
-## TO-DOs
-
-- Error messages:
-  - ConstraintViolation handling: show above form in frontend ?
-  - notifications
-  - Exception: show message ?
-- Check for invalid vaccine name / dosis number
-
 ## Features description 
 
 ### Vaccine search

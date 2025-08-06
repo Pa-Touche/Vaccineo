@@ -46,6 +46,11 @@ public class AdministeredVaccineService {
         return vaccineTypeRepository.existsByName(vaccineName);
     }
 
+    @Transactional(readOnly = true)
+    public boolean alreadyAdministered(String vaccineName, Integer dose) {
+        return administeredVaccineRepository.existsByVaccineTypeNameAndDoseNumber(vaccineName, dose);
+    }
+
 
     public Integer create(UserIdWrapper<CreateAdministeredVaccineRequest> requestWrapper) {
         CreateAdministeredVaccineRequest request = requestWrapper.getRequest();

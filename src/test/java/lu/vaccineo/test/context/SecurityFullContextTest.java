@@ -56,7 +56,7 @@ public class SecurityFullContextTest extends BaseFullContextTest {
                                 .email("valid@mail.de")
                                 .password("some_password")
                                 .build())))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -69,6 +69,6 @@ public class SecurityFullContextTest extends BaseFullContextTest {
                                 .email(randomUser.getEmail())
                                 .password("***some_password***")
                                 .build())))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 }

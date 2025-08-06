@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lu.vaccineo.business.vaccine.administered.validation.VaccineAlreadyAdministered;
 import lu.vaccineo.business.vaccine.administered.validation.ValidVaccineName;
 import org.springframework.lang.Nullable;
 
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@VaccineAlreadyAdministered
 public class CreateAdministeredVaccineRequest {
     @NotEmpty
     @ValidVaccineName

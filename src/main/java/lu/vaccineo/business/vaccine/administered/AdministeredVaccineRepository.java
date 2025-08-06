@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 public interface AdministeredVaccineRepository extends JpaRepository<AdministeredVaccineEntity, Integer>, JpaSpecificationExecutor<AdministeredVaccineEntity> {
 
+    boolean existsByVaccineTypeNameAndDoseNumber(String vacinneName, Integer doseNumber);
+
     @EntityGraph(attributePaths = {
             "user",
             "vaccineType"
