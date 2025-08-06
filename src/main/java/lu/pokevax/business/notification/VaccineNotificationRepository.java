@@ -1,5 +1,6 @@
 package lu.pokevax.business.notification;
 
+import lu.pokevax.business.notification.projections.VaccineNotificationDto;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,7 +14,12 @@ import java.util.List;
 @Repository
 public interface VaccineNotificationRepository extends JpaRepository<VaccineNotificationEntity, Integer> {
 
-    List<VaccineNotificationEntity> findAllByUserId(Integer userId, Sort sort);
+    @Query("SELECT new lu.pokevax.business.notification.projections.VaccineNotificationDto(vn.deadline, vs.doseNumber, vt.name) " +
+            "FROM notification_vaccine vn " +
+            "JOIN vn.vaccineSchedule vs " +
+            "JOIN vs.vaccineType vt " +
+            "WHERE vn.user.id = :userId")
+    List<VaccineNotificationDto> findAllNotifications(@Param("userId") Integer userId, Sort sort);
 
     @Modifying
     @Query("DELETE FROM notification_vaccine WHERE deadline < :today")

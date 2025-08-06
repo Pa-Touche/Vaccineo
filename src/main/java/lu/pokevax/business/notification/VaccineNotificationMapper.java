@@ -1,8 +1,8 @@
 package lu.pokevax.business.notification;
 
+import lu.pokevax.business.notification.projections.VaccineNotificationDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
@@ -12,7 +12,5 @@ import org.mapstruct.ReportingPolicy;
 public interface VaccineNotificationMapper {
 
 
-    @Mapping(target = "vaccineName", source = "vaccineScheduleEntity.vaccineType.name")
-    @Mapping(target = "doseNumber", source = "vaccineScheduleEntity.doseNumber")
-    VaccineNotificationResponse toResponse(VaccineNotificationEntity entity);
+    VaccineNotificationResponse toResponse(VaccineNotificationDto entity);
 }

@@ -19,7 +19,7 @@ public class VaccineNotificationService {
     private final VaccineNotificationMapper mapper;
 
     public List<VaccineNotificationResponse> retrieveNotificationsFor(Integer userId) {
-        return repository.findAllByUserId(userId, Sort.by(Sort.Direction.ASC, "deadline")).stream()
+        return repository.findAllNotifications(userId, Sort.by(Sort.Direction.ASC, "deadline")).stream()
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }

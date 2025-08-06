@@ -28,7 +28,7 @@ public class VaccineNotificationCreationHelper {
         vaccineNotificationRepository.saveAll(vaccineScheduleRepository.findAll().stream()
                 .map(scheduleEntity -> VaccineNotificationEntity.builder()
                         .user(user)
-                        .vaccineScheduleEntity(scheduleEntity)
+                        .vaccineSchedule(scheduleEntity)
                         .deadline(user.getBirthDate().plusDays(scheduleEntity.getApplicationDeadlineDays()))
                         .build())
                 .filter(vaccineNotificationEntity -> vaccineNotificationEntity.getDeadline().isAfter(now))

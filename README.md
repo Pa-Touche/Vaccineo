@@ -30,8 +30,6 @@ This project is not meant to be used as-is in PROD, mostly due to security issue
 
 ## TO-DOs
 
-- "CSS" issues:
-  - Profile not same height as dashboard
 - Performance:
   - Check EAGER loaded elements: create projections
   - Replace by LAZY by default
@@ -141,7 +139,8 @@ inserts without round-trip to DBs (best to use one/mulitple common sequences so 
 - **Use** Spring-Security instead of doing it manually. Here was done for learning / exercise reasons  
   - bearer token / checking mechanism from Spring-Security
   - Password encryption: do not rely on 'self-made' solutions
-- `@OneToOne(fetch = FetchType.EAGER)`: do not rely on eager strategy and favor more flexible solutions: entityGraph / projections.
+- `@OneToOne(fetch = FetchType.LAZY)`: do not rely on eager strategy and favor more flexible solutions: entityGraph /
+  projections.
 - `@Enumerated(EnumType.STRING)` is more easily readable in DB but takes more space
 - Exposing technical IDs: incremented numbers allow clients to gain knowledge about usage: Privacy and Securicy
 - Indexes: index where only set on foreign keys, as those are used to perform joins.

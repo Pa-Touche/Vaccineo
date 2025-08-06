@@ -29,7 +29,7 @@ public class AdministeredVaccineEntity extends BaseEntity {
     /**
      * Eagerly loaded to avoid additional query.
      */
-    @OneToOne(fetch = FetchType.EAGER, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "vaccine_type_id")
     @NotNull
     private VaccineTypeEntity vaccineType;
