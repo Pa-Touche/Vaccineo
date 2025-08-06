@@ -1,4 +1,4 @@
-package lu.vaccineo.test.integration;
+package lu.vaccineo.test.context;
 
 import lombok.SneakyThrows;
 import lu.vaccineo.business.user.UserController;
@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class UserSpringBootTest extends BaseSpringBootTest {
+public class UserFullContextTest extends BaseFullContextTest {
 
     @Autowired
     private UserController userController;

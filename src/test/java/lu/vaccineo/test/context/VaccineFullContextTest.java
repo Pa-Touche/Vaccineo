@@ -1,4 +1,4 @@
-package lu.vaccineo.test.integration;
+package lu.vaccineo.test.context;
 
 import lu.vaccineo.business.vaccine.administered.VaccineSortableField;
 import lu.vaccineo.business.vaccine.administered.requests.CreateAdministeredVaccineRequest;
@@ -20,7 +20,7 @@ import java.util.Comparator;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class VaccineSpringBootTest extends BaseSpringBootTest {
+public class VaccineFullContextTest extends BaseFullContextTest {
 
 
     @Test

@@ -1,4 +1,4 @@
-package lu.vaccineo.test.integration;
+package lu.vaccineo.test.context;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
@@ -44,8 +44,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @Slf4j
 @Tag("springBoot") // could be used for running some tests separately
-@Import(value = BaseSpringBootTest.CommonBaseConfiguration.class)
-public class BaseSpringBootTest {
+@Import(value = BaseFullContextTest.CommonBaseConfiguration.class)
+public class BaseFullContextTest {
 
     protected String VACCINE_URI = VaccineController.URI;
     protected String VACCINE_NOTIFICATIONS_URI = VaccineNotificationController.URI;

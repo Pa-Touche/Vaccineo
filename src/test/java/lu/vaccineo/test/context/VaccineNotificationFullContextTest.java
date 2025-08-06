@@ -1,4 +1,4 @@
-package lu.vaccineo.test.integration;
+package lu.vaccineo.test.context;
 
 import lombok.SneakyThrows;
 import lu.vaccineo.business.notification.VaccineNotificationResponse;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class VaccineNotificationSpringBootTest extends BaseSpringBootTest {
+public class VaccineNotificationFullContextTest extends BaseFullContextTest {
 
     @SneakyThrows
     @Test

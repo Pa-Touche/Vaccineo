@@ -1,4 +1,4 @@
-package lu.vaccineo.test.integration;
+package lu.vaccineo.test.context;
 
 import lombok.SneakyThrows;
 import lu.vaccineo.business.notification.VaccineNotificationRepository;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * <p>
  * https://en.wikipedia.org/wiki/White-box_testing.
  */
-public class WhiteBoxDeletionSpringBootTest extends BaseSpringBootTest {
+public class WhiteBoxDeletionFullContextTest extends BaseFullContextTest {
 
     @Autowired
     private UserPasswordRepository userPasswordRepository;

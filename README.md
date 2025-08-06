@@ -16,6 +16,10 @@ Otherwise you can use:
 mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
+Once the application started you can verify it's behaving correctly by executing unit and integration Tests: 
+
+`mvn verify` 
+
 ## Known errors
 
 - The reload on the dashboard (browser refresh: F5 / ctrl + r) the path is not properly loaded

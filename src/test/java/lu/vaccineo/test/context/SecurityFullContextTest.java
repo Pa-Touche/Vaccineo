@@ -1,4 +1,4 @@
-package lu.vaccineo.test.integration;
+package lu.vaccineo.test.context;
 
 import lu.vaccineo.business.user.login.LoginRequest;
 import org.junit.jupiter.api.Test;
@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class SecuritySpringBootTest extends BaseSpringBootTest {
+public class SecurityFullContextTest extends BaseFullContextTest {
 
     @Test
     public void invalid_bearer_token() throws Exception {
