@@ -180,7 +180,7 @@ public class DashboardView extends VerticalLayout implements View {
                     StringBuilder message = new StringBuilder("Rappels de vaccination:\n");
 
                     for (VaccineNotificationResponse notification : notifications) {
-                        message.append("- ").append(String.format("Dose %s du vaccin %s avant %s", notification.getDoseNumber(), notification.getVaccineName(), notification.getDeadline())).append("\n");
+                        message.append("- ").append(String.format("Dose %s du vaccin %s avant %s", notification.getDoseNumber(), notification.getVaccineName(), RootUI.FORMATTER.format(notification.getDeadline()))).append("\n");
                     }
 
                     current.access(() ->

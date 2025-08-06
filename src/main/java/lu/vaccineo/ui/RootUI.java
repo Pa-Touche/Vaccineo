@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import lu.vaccineo.ui.helpers.GlobalErrorHandler;
 import lu.vaccineo.ui.helpers.SessionWrapper;
 
+import java.time.format.DateTimeFormatter;
+
 @SpringUI(path = "") // Root path
 @Theme("valo")
 @RequiredArgsConstructor
@@ -22,6 +24,8 @@ import lu.vaccineo.ui.helpers.SessionWrapper;
 public class RootUI extends UI {
 
     public static final String DATE_FORMAT = "dd/MM/yyyy";
+
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
     private final ViewProvider viewProvider;
     private final SessionWrapper sessionWrapper;
