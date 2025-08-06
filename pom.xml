@@ -11,7 +11,7 @@
 
     <groupId>lu.vaccineo</groupId>
     <artifactId>vaccineo</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <name>vaccineo</name>
     <description>Vaccineo: Spring Boot / Vaadin application to handle user&apos;s vaccines</description>
