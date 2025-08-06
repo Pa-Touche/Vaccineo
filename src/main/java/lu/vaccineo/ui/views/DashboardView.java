@@ -52,7 +52,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 @SpringView(name = DashboardView.VIEW_PATH)
-@Title("Dashboard | Pokevax")
+@Title("Dashboard | Vaccineo")
 @RequiredArgsConstructor
 public class DashboardView extends VerticalLayout implements View {
 

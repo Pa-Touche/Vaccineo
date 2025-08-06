@@ -73,6 +73,7 @@ To keep things simple some shortcuts were made, some of those with explanation a
     - Follows naming conventions
 - Logging: Create AOP annotation to enable default logging.
 - I18N: internationalization
+- JPA model gen to provide type satefy for entities fields.
 
 ## TO-DOs
 
@@ -87,9 +88,7 @@ To keep things simple some shortcuts were made, some of those with explanation a
 ### Vaccine search
 
 The request is not paginated as it's not expected that avery huge amount of vaccines will be created.
-In PROD additional checks should be added.
-
-IMO JPA model gen should be used to provide type-safety.
+In PROD additional checks should be added to avoid retrieving too much data (volume).
 
 ### Batch
 

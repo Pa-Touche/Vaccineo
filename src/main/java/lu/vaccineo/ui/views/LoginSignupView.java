@@ -58,7 +58,7 @@ public class LoginSignupView extends VerticalLayout implements View {
     }
 
     private static Label buildTitle() {
-        Label title = new Label("Pokevax");
+        Label title = new Label("Vaccineo");
 
         title.setStyleName(ValoTheme.LABEL_H1 + " " + ValoTheme.LABEL_COLORED);
         title.setHeight("50%");

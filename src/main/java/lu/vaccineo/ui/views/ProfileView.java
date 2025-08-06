@@ -17,7 +17,7 @@ import javax.annotation.PostConstruct;
 import java.time.format.DateTimeFormatter;
 
 @SpringView(name = ProfileView.UI_PATH)
-@Title("Mon Profil | Pokevax")
+@Title("Mon Profil | Vaccineo")
 @RequiredArgsConstructor
 public class ProfileView extends VerticalLayout implements View {
 

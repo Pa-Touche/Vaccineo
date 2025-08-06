@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="PokevaxApplication local" type="Application" factoryName="Application">
+  <configuration default="false" name="VaccineoApplication local" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="lu.vaccineo.VaccineoApplication"/>
     <module name="vaccineo"/>
     <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=local" />
