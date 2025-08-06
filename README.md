@@ -30,9 +30,6 @@ This project is not meant to be used as-is in PROD, mostly due to security issue
 
 ## TO-DOs
 
-- Performance:
-  - Check EAGER loaded elements: create projections
-  - Replace by LAZY by default
 - UX:
   - Enter button handling for forms
   - trim / lowercase email inputs
