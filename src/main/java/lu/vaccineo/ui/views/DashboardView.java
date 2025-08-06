@@ -20,8 +20,10 @@ import com.vaadin.data.HasValue;
 import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.Page;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
@@ -42,6 +44,7 @@ import lu.vaccineo.ui.RootUI;
 import lu.vaccineo.ui.components.ComponentsFactory;
 import lu.vaccineo.ui.helpers.HttpClientHelper;
 import lu.vaccineo.ui.helpers.SessionWrapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 
@@ -60,6 +63,7 @@ public class DashboardView extends VerticalLayout implements View {
 
     public static final String VIEW_PATH = "dashboard";
     public static final SearchVaccineRequest DEFAULT_SEARCH = new SearchVaccineRequest();
+    public static final int LIMIT_VACCINES_SHOW_IN_NOTIFICATION = 5;
 
     private final HttpClientHelper httpClientHelper;
 
@@ -116,7 +120,52 @@ public class DashboardView extends VerticalLayout implements View {
         loadVaccines();
 
         // must be performed in async manner to not block the main thread
-        UI.getCurrent().access(this::fetchAndDisplayNotifications);
+        UI.getCurrent().access(() -> fetchAndDisplayNotifications(header));
+    }
+
+    private Component createNotificationBell(List<VaccineNotificationResponse> notifications) {
+        CssLayout wrapper = new CssLayout();
+        wrapper.addStyleName("notification-bell-wrapper");
+
+        Button bell = new Button(VaadinIcons.BELL);
+        bell.addStyleName("notification-bell");
+        bell.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
+        bell.setDescription("Voir les notifications");
+
+        Label badge = new Label(String.valueOf(notifications.size()));
+        badge.addStyleName("notification-badge");
+
+        wrapper.addComponents(bell, badge);
+
+        bell.addClickListener(e -> showNotificationsModal(notifications));
+
+        return wrapper;
+    }
+
+    private void showNotificationsModal(List<VaccineNotificationResponse> notifications) {
+        Window modal = new Window("Notifications de vaccination");
+        modal.setModal(true);
+        modal.setResizable(false);
+        modal.setClosable(true);
+        modal.setWidth("1000px");
+
+        VerticalLayout content = new VerticalLayout();
+        content.setMargin(true);
+        content.setSpacing(true);
+
+        if (notifications.isEmpty()) {
+            return;
+        }
+
+        for (VaccineNotificationResponse notif : notifications) {
+            Label label = new Label(formatNotificationText(notif));
+            label.setWidthFull();
+            content.addComponent(label);
+        }
+
+
+        modal.setContent(content);
+        UI.getCurrent().addWindow(modal);
     }
 
     private static HorizontalLayout buildHeader(Label title, Button addVaccineBtn) {
@@ -158,12 +207,13 @@ public class DashboardView extends VerticalLayout implements View {
     /**
      * Notifications are called asyncronously to not block the main thread.
      */
-    private void fetchAndDisplayNotifications() {
+    private void fetchAndDisplayNotifications(HorizontalLayout header) {
         UI current = UI.getCurrent();
 
         String baseUrl = HttpClientHelper.getBaseUrl();
 
         String token = sessionWrapper.getToken();
+        Boolean wasVaccineNotificationAlreadyDisplayed = sessionWrapper.getVaccineNotificationAlreadyDisplayed();
 
         CompletableFuture.runAsync(() -> {
             try {
@@ -176,17 +226,36 @@ public class DashboardView extends VerticalLayout implements View {
                 );
 
                 List<VaccineNotificationResponse> notifications = response.getData().getContent();
-                if (notifications != null && !notifications.isEmpty()) {
-                    StringBuilder message = new StringBuilder("Rappels de vaccination:\n");
 
-                    for (VaccineNotificationResponse notification : notifications) {
-                        message.append("- ").append(String.format("Dose %s du vaccin %s avant %s", notification.getDoseNumber(), notification.getVaccineName(), RootUI.FORMATTER.format(notification.getDeadline()))).append("\n");
+
+                if (CollectionUtils.isEmpty(notifications)) {
+                    return;
+                }
+
+                StringBuilder message = new StringBuilder(String.format("Vous avez %s vaccins à effectuer.\n", notifications.size()));
+
+                notifications.stream()
+                        .limit(LIMIT_VACCINES_SHOW_IN_NOTIFICATION)
+                        .forEach(notification -> message.append(formatNotificationText(notification)));
+
+                if (notifications.size() > LIMIT_VACCINES_SHOW_IN_NOTIFICATION) {
+                    message.append("\n\n... Cliquer sur la cloche pour tous les visualiser");
+                }
+
+
+                current.access(() -> {
+                    Component notificationBell = createNotificationBell(notifications);
+                    header.addComponent(notificationBell);
+                    header.setComponentAlignment(notificationBell, Alignment.MIDDLE_LEFT);
+
+                    if (!wasVaccineNotificationAlreadyDisplayed) {
+                        Notification notification = new Notification("Notifications de vaccins", message.toString(), Notification.Type.TRAY_NOTIFICATION);
+                        notification.setDelayMsec(6000);
+                        notification.show(Page.getCurrent());
                     }
 
-                    current.access(() ->
-                            Notification.show("Notifications de vaccins", message.toString(), Notification.Type.TRAY_NOTIFICATION)
-                    );
-                }
+                    sessionWrapper.setVaccineNotificationAlreadyDisplayed(true);
+                });
 
             } catch (Exception e) {
                 current.access(() ->
@@ -194,6 +263,10 @@ public class DashboardView extends VerticalLayout implements View {
                 );
             }
         });
+    }
+
+    private static String formatNotificationText(VaccineNotificationResponse notification) {
+        return String.format("- Dose %s du vaccin %s avant %s\n", notification.getDoseNumber(), notification.getVaccineName(), RootUI.FORMATTER.format(notification.getDeadline()));
     }
 
     private void configureGrid() {

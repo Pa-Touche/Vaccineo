@@ -67,10 +67,35 @@ public class RootUI extends UI {
         });
 
 
+        // TODO: enhance this by using adequate css files
         Page.getCurrent().getStyles().add(
                 ".menu-selected { font-weight: bold !important; text-decoration: underline; }" +
                         ".v-menubar .v-menubar-menuitem { width: 50%; text-align: center; }" +
-                        ".no-margin-top { margin-top: 0 !important; }"
+                        ".no-margin-top { margin-top: 0 !important; }" +
+
+                        ".notification-bell-container {" +
+                        "position: relative;" +
+                        "cursor: pointer;" +
+                        "}" +
+                        ".notification-bell {" +
+                        "font-size: 24px;" +
+                        "color: #444;" +
+                        "}" +
+                        ".notification-badge {" +
+                        "position: absolute;" +
+                        "top: 40px;" +
+                        "right: -5px;" +
+                        "background-color: red;" +
+                        "color: white;" +
+                        "border-radius: 50%;" +
+                        "font-size: 12px;" +
+                        "width: 18px;" +
+                        "height: 18px;" +
+                        "line-height: 18px;" +
+                        "text-align: center;" +
+                        "font-weight: bold;" +
+                        "pointer-events: none;" +
+                        "}"
         );
     }
 }
