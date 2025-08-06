@@ -12,7 +12,9 @@ public class ComponentsFactory {
         menuBar.setWidthFull();
         MenuBar.Command menuCommand = menu ->
                 UI.getCurrent().getNavigator().navigateTo(DashboardView.VIEW_PATH);
-        menuBar.addItem("💉 Carte de vaccination", currentDisplayed == MenuEntry.VACCINE_DASHBOARD ? null : menuCommand);
+        MenuBar.MenuItem dashboardMenuItem = menuBar.addItem("💉 Carte de vaccination", currentDisplayed == MenuEntry.VACCINE_DASHBOARD ? null : menuCommand);
+
+        dashboardMenuItem.setStyleName("menu-selected");
 
         MenuBar.Command profileCommand = menu ->
                 UI.getCurrent().getNavigator().navigateTo(ProfileView.UI_PATH);

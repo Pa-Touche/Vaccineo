@@ -5,6 +5,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.navigator.ViewProvider;
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.UI;
@@ -58,5 +59,12 @@ public class RootUI extends UI {
                 // Optional: actions after view change
             }
         });
+
+
+        Page.getCurrent().getStyles().add(
+                ".menu-selected { font-weight: bold !important; text-decoration: underline; }" +
+                        ".v-menubar .v-menubar-menuitem { width: 50%; text-align: center; }" +
+                        ".no-margin-top { margin-top: 0 !important; }"
+        );
     }
 }

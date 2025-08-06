@@ -32,9 +32,14 @@ This project is not meant to be used as-is in PROD, mostly due to security issue
 
 - "CSS" issues:
   - Profile not same height as dashboard
-  - menu bar not width enough
 - Performance:
-  - Check EAGER loaded elements
+  - Check EAGER loaded elements: create projections
+  - Replace by LAZY by default
+- UX:
+  - Enter button handling for forms
+  - trim / lowercase email inputs
+- Vaadin:
+  - Refactoring to avoid too much duplication
 - Error messages:
   - ConstraintViolation handling: show above form in frontend ?
   - notifications

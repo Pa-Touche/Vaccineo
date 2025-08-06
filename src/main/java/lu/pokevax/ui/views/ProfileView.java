@@ -36,7 +36,7 @@ public class ProfileView extends VerticalLayout implements View {
 
         Label title = new Label("Mon profil utilisateur");
         title.addStyleName(ValoTheme.LABEL_H1);
-        addComponent(title);
+        title.addStyleName("no-margin-top");
 
         FormLayout form = new FormLayout();
         form.setWidthFull();
@@ -70,9 +70,49 @@ public class ProfileView extends VerticalLayout implements View {
 
             deleteBtn = new Button("Supprimer mon compte", evt -> {
                 try {
-                    httpClientHelper.delete(UserController.URI + String.format("/%s", user.getId()));
-                    Notification.show("Compte supprimé", Notification.Type.WARNING_MESSAGE);
-                    UI.getCurrent().getNavigator().navigateTo(LoginSignupView.VIEW_PATH);
+
+                    Window confirmDialog = new Window("Confirmation");
+                    confirmDialog.setModal(true);
+                    confirmDialog.setClosable(false);
+                    confirmDialog.setResizable(false);
+                    confirmDialog.setWidth("400px");
+
+                    VerticalLayout dialogLayout = new VerticalLayout();
+                    dialogLayout.setMargin(true);
+                    dialogLayout.setSpacing(true);
+
+                    Label message = new Label("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irrévocable.");
+                    message.setWidth("100%");
+
+                    Button confirmBtn = new Button("Oui, supprimer");
+                    confirmBtn.addStyleName(ValoTheme.BUTTON_DANGER);
+
+                    Button cancelBtn = new Button("Annuler");
+                    cancelBtn.addStyleName(ValoTheme.BUTTON_PRIMARY);
+
+                    HorizontalLayout buttons = new HorizontalLayout(confirmBtn, cancelBtn);
+                    buttons.setSpacing(true);
+
+                    confirmBtn.addClickListener(event -> {
+                        try {
+                            httpClientHelper.delete(UserController.URI + String.format("/%s", user.getId()));
+                            Notification.show("Compte supprimé", Notification.Type.WARNING_MESSAGE);
+                            confirmDialog.close();
+                            UI.getCurrent().getNavigator().navigateTo(LoginSignupView.VIEW_PATH);
+
+                        } catch (Exception e) {
+                            Notification.show("Échec de la suppression: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
+                            confirmDialog.close();
+                        }
+                    });
+
+                    cancelBtn.addClickListener(event -> confirmDialog.close());
+
+                    dialogLayout.addComponents(message, buttons);
+                    confirmDialog.setContent(dialogLayout);
+
+                    UI.getCurrent().addWindow(confirmDialog);
+
                 } catch (Exception e) {
                     Notification.show("Échec de la suppression: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
                 }
@@ -82,13 +122,16 @@ public class ProfileView extends VerticalLayout implements View {
             Notification.show("Erreur lors du chargement du profil: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
         }
 
+        HorizontalLayout header = new HorizontalLayout(title, deleteBtn);
+        header.setWidthFull();
+        header.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
+        header.setMargin(false);
+        header.setExpandRatio(title, 1);
 
-        HorizontalLayout topLayout = new HorizontalLayout(form, deleteBtn);
-        topLayout.setWidth("60%");
-        topLayout.setComponentAlignment(deleteBtn, Alignment.TOP_RIGHT);
-        topLayout.setExpandRatio(form, 1);  // form takes all available space
+        addComponent(header);
 
-        addComponent(topLayout);
+        addComponent(form);
+
     }
 
     @Override
