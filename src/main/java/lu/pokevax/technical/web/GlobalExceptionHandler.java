@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
-        log.warn("Following exception occured, as this is a instance of DisplayableRuntimeException the message will be returned as it to the client");
+        log.warn("Following exception occured, as this is a instance of DisplayableRuntimeException the message will be returned as it to the client", ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
     }
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DisplayableRuntimeException.class)
     public ResponseEntity<String> handleInvalidPasswordException(DisplayableRuntimeException ex) {
-        log.warn("Following exception occured, as this is a instance of DisplayableRuntimeException the message will be returned as it to the client");
+        log.warn("Following exception occured, as this is a instance of DisplayableRuntimeException the message will be returned as it to the client", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
     }

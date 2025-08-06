@@ -1,6 +1,8 @@
 package lu.pokevax.ui.views;
 
 import com.vaadin.data.HasValue;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
@@ -13,6 +15,7 @@ import lu.pokevax.business.user.login.LoginResponse;
 import lu.pokevax.business.user.requests.CreateUserRequest;
 import lu.pokevax.ui.helpers.HttpClientHelper;
 import lu.pokevax.ui.helpers.SessionWrapper;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -75,33 +78,39 @@ public class LoginSignupView extends VerticalLayout implements View {
         loginBtn.setStyleName(ValoTheme.BUTTON_PRIMARY);
 
         loginBtn.addClickListener(clickEvent -> {
-
-            HttpClientHelper.HttpResponse<LoginResponse> response = httpClientHelper.post(HttpClientHelper.PostRequest.<LoginRequest, LoginResponse>builder()
-                    .endpoint(LoginController.URI)
-                    .returnType(LoginResponse.class)
-                    .body(LoginRequest.builder()
-                            .email(email.getValue())
-                            .password(password.getValue())
-                            .build())
-                    .build());
-
-            if (response.hasError()) {
-                Notification.show(response.getErrorMessage(), Notification.Type.ERROR_MESSAGE);
-                return;
-            }
-
-            try {
-                LoginResponse loginResponse = response.getData();
-                sessionWrapper.setToken(loginResponse.getToken());
-                sessionWrapper.setCurrentUserId(loginResponse.getUserId());
-                getUI().getNavigator().navigateTo(DashboardView.VIEW_PATH);
-            } catch (Exception ex) {
-                Notification.show("La connexion a échoué", Notification.Type.ERROR_MESSAGE);
-            }
+            performLogin(StringUtils.toRootLowerCase(StringUtils.trim(email.getValue())), password.getValue());
         });
+
+        loginBtn.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+
 
         layout.addComponents(email, password, loginBtn);
         return layout;
+    }
+
+    private void performLogin(String emailTextValue, String passwordTextValue) {
+        HttpClientHelper.HttpResponse<LoginResponse> response = httpClientHelper.post(HttpClientHelper.PostRequest.<LoginRequest, LoginResponse>builder()
+                .endpoint(LoginController.URI)
+                .returnType(LoginResponse.class)
+                .body(LoginRequest.builder()
+                        .email(emailTextValue)
+                        .password(passwordTextValue)
+                        .build())
+                .build());
+
+        if (response.hasError()) {
+            Notification.show(response.getErrorMessage(), Notification.Type.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            LoginResponse loginResponse = response.getData();
+            sessionWrapper.setToken(loginResponse.getToken());
+            sessionWrapper.setCurrentUserId(loginResponse.getUserId());
+            getUI().getNavigator().navigateTo(DashboardView.VIEW_PATH);
+        } catch (Exception ex) {
+            Notification.show("La connexion a échoué", Notification.Type.ERROR_MESSAGE);
+        }
     }
 
     private VerticalLayout buildSignupTab() {
@@ -140,29 +149,42 @@ public class LoginSignupView extends VerticalLayout implements View {
                 return;
             }
 
-//            if (passwordField.getValue().length() < 5) {
-//                Notification.show("Password must be at least 5 characters", Notification.Type.WARNING_MESSAGE);
-//                return;
-//            }
-
             try {
-                httpClientHelper.post(HttpClientHelper.PostRequest.<CreateUserRequest, Integer>builder()
+                String emailTextValue = StringUtils.toRootLowerCase(StringUtils.trim(emailField.getValue()));
+                String passwordTextValue = passwordField.getValue();
+                HttpClientHelper.HttpResponse<Integer> response = httpClientHelper.post(HttpClientHelper.PostRequest.<CreateUserRequest, Integer>builder()
                         .endpoint(UserController.URI)
                         .body(CreateUserRequest.builder()
                                 .name(nameField.getValue())
                                 .surname(surnameField.getValue())
                                 .birthDate(birthDateField.getValue())
-                                .email(emailField.getValue())
-                                .password(passwordField.getValue())
+                                .email(emailTextValue)
+                                .password(passwordTextValue)
                                 .build())
                         .returnType(Integer.class)
                         .build());
+
+                if (response.hasError()) {
+                    Notification.show("Le compte n'as pas pu être créer: " + response.getErrorMessage(), Notification.Type.ERROR_MESSAGE);
+                    return;
+                }
+
                 Notification.show("Le compte à été créer avec succès", Notification.Type.TRAY_NOTIFICATION);
 
-                UI.getCurrent().getNavigator().navigateTo(LoginSignupView.VIEW_PATH);
+//                UI.getCurrent().getNavigator().navigateTo(LoginSignupView.VIEW_PATH);
+
+                performLogin(emailTextValue, passwordTextValue);
 
             } catch (Exception ex) {
                 Notification.show("Le compte n'as pas pu être créer: " + ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+            }
+        });
+
+        // TODO: this doesn't work: I tried layout/button and same as approach as for signup
+        layout.addShortcutListener(new ShortcutListener("Enter", ShortcutAction.KeyCode.ENTER, null) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                signupBtn.click();
             }
         });
 

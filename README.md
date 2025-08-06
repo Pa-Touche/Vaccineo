@@ -32,7 +32,6 @@ This project is not meant to be used as-is in PROD, mostly due to security issue
 
 - UX:
   - Enter button handling for forms
-  - trim / lowercase email inputs
 - Vaadin:
   - Refactoring to avoid too much duplication
 - Error messages:
