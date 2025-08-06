@@ -8,6 +8,8 @@ This project is not meant to be used as-is in PROD, mostly due to security issue
 
 If you are an IntelliJ user you can use the "local" run configuration: in `./run`.
 
+Following JDK was used for the tests: `temurin-1.8.0_452`
+
 Otherwise you can use:
 
 ```

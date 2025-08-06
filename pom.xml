@@ -8,11 +8,14 @@
         <version>2.7.18</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>lu.vaccineo</groupId>
     <artifactId>vaccineo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
     <name>vaccineo</name>
     <description>Vaccineo: Spring Boot / Vaadin application to handle user&apos;s vaccines</description>
+
     <properties>
         <java.version>8</java.version>
         <maven.compiler.source>8</maven.compiler.source>
@@ -28,6 +31,7 @@
         <commons-collections4.version>4.5.0</commons-collections4.version>
         <commons-io.version>2.20.0</commons-io.version>
     </properties>
+
     <dependencies>
         <!--  SPRING starter dependencies -->
         <dependency>

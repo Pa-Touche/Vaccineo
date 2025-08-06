@@ -1,11 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="VaccineoApplication local" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="lu.vaccineo.VaccineoApplication"/>
-      <module name="pokevax"/>
+    <option name="MAIN_CLASS_NAME" value="lu.vaccineo.VaccineoApplication" />
+    <module name="vaccineo" />
     <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=local" />
     <extension name="coverage">
       <pattern>
-          <option name="PATTERN" value="lu.vaccineo.technical.dialect.*"/>
+        <option name="PATTERN" value="lu.vaccineo.technical.dialect.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
