@@ -19,6 +19,7 @@ import com.vaadin.annotations.Title;
 import com.vaadin.data.HasValue;
 import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.shared.data.sort.SortDirection;
@@ -41,6 +42,7 @@ import lu.vaccineo.ui.RootUI;
 import lu.vaccineo.ui.components.ComponentsFactory;
 import lu.vaccineo.ui.helpers.HttpClientHelper;
 import lu.vaccineo.ui.helpers.SessionWrapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 
 import javax.annotation.PostConstruct;
@@ -80,15 +82,20 @@ public class DashboardView extends VerticalLayout implements View {
         addVaccineBtn.addStyleName(ValoTheme.BUTTON_PRIMARY);
         addVaccineBtn.addClickListener(ignored -> openAddVaccineModal());
 
-        TextField filterVaccineName = new TextField();
+        ComboBox<String> filterVaccineName = buildVaccineNameSelector();
         filterVaccineName.setPlaceholder("Filtrer par nom");
+        filterVaccineName.setWidth("590px");
 
         DateField filterAdministeredDate = buildFilterDate();
+        filterAdministeredDate.setWidth("430px");
 
-        TextField filterDoseNumber = new TextField();
-        filterDoseNumber.setPlaceholder("Filtrer par dose");
+        TextField filterDoseNumber = ComponentsFactory.numberOnlyField();
+        filterDoseNumber.setPlaceholder("Filtrer par numéro de dose");
+        filterDoseNumber.setWidth("403px");
 
         Button applyFilters = buildApplyFiltersButton(filterVaccineName, filterAdministeredDate, filterDoseNumber);
+
+        applyFilters.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
         Button resetFilters = new Button("Réinitialiser les filtres", e -> {
             filterVaccineName.clear();
@@ -123,10 +130,10 @@ public class DashboardView extends VerticalLayout implements View {
         return header;
     }
 
-    private Button buildApplyFiltersButton(TextField filterName, DateField filterDate, TextField filterDose) {
+    private Button buildApplyFiltersButton(ComboBox<String> filterName, DateField filterDate, TextField filterDose) {
         return new Button("Appliquer les filtres", e -> {
             SearchVaccineCriteria criteria = SearchVaccineCriteria.builder()
-                    .vaccineName(filterName.getValue().isEmpty() ? null : filterName.getValue())
+                    .vaccineName(StringUtils.isBlank(filterName.getValue()) ? null : filterName.getValue())
                     .administrationDate(filterDate.getValue())
                     .doseNumber(parseDoseNumber(filterDose.getValue()))
                     .build();
@@ -276,11 +283,11 @@ public class DashboardView extends VerticalLayout implements View {
 
         FormLayout form = new FormLayout();
 
-        ComboBox<String> vaccineNameSelector = buildVaccineNameSelector();
+        ComboBox<String> vaccineNameSelector = buildVaccineNameSelector("Nom vaccin");
 
         DateField adminDate = buildAdministeredDateField();
 
-        TextField doseNumber = new TextField("Numéro de la dose");
+        TextField doseNumber = ComponentsFactory.numberOnlyField("Numéro de la dose");
 
         TextField comment = new TextField("Commentaire");
 
@@ -341,7 +348,11 @@ public class DashboardView extends VerticalLayout implements View {
     }
 
     private ComboBox<String> buildVaccineNameSelector() {
-        ComboBox<String> vaccineName = new ComboBox<>("Nom vaccin");
+        return buildVaccineNameSelector(null);
+    }
+
+    private ComboBox<String> buildVaccineNameSelector(String caption) {
+        ComboBox<String> vaccineName = new ComboBox<>(caption);
 
         vaccineName.setEmptySelectionAllowed(false);  // force user to select
 

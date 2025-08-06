@@ -1,6 +1,7 @@
 package lu.vaccineo.ui.components;
 
 import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import lu.vaccineo.ui.views.DashboardView;
 import lu.vaccineo.ui.views.ProfileView;
@@ -22,6 +23,23 @@ public class ComponentsFactory {
 
 
         return menuBar;
+    }
+
+    public static TextField numberOnlyField() {
+        return numberOnlyField(null);
+    }
+
+    public static TextField numberOnlyField(String caption) {
+        TextField numberOnlyField = new TextField(caption);
+
+        numberOnlyField.addValueChangeListener(event -> {
+            String newValue = event.getValue();
+            if (!newValue.matches("\\d*")) {
+                numberOnlyField.setValue(newValue.replaceAll("\\D", ""));
+            }
+        });
+
+        return numberOnlyField;
     }
 
     public enum MenuEntry {
